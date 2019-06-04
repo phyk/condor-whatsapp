@@ -36,17 +36,17 @@ public class WhatsappDBToCsv {
 
         // Add config File with info instead of args
 
-        String message = decrypt12.decrypt(args[1], args[0], "data/msgstore.db");
+        String message = AndroidDbDecrypter.decrypt(args[1], args[0], "data/msgstore.db");
 
         if(message.equals("Decryption of crypt12 file was successful.")) {
             WhatsappDBToCsv wcs = WhatsappDBToCsv.create("data/msgstore.db");
-            wcs.createCSVExport();
+            wcs.createCSVExport("data/links.csv","data/actors.csv");
             wcs.closeDbConnection();
             System.exit(0);
         }
     }
 
-    public void createCSVExport() throws IOException {
+    public void createCSVExport(String pathToLinks, String pathToActors) throws IOException {
         String sql = "SELECT main.messages._id AS linkid," +
                 "main.messages.data AS content, " +
                 "main.messages.key_remote_jid as idRef, " +
@@ -88,8 +88,8 @@ public class WhatsappDBToCsv {
         }, stc);
 
         StringColumn id = StringColumn.create("uuid", length);
-        Random r = new Random();
-        tbl.column("linkid").asStringColumn().mapInto(s -> r.nextInt(Integer.MAX_VALUE) + "", id);
+
+        tbl.column("linkid").asStringColumn().mapInto(s -> UUID.randomUUID() + "", id);
 
         StringColumn content = StringColumn.create("content", length);
         tbl.column("content").asStringColumn().mapInto(s -> s.replace("\r\n",". ").replace(";","").replace("\r",""), content);
@@ -156,7 +156,7 @@ public class WhatsappDBToCsv {
 
         Table copy = Table.create(id, content, sIdc, tIdc, stc, etc);
 
-        CsvWriteOptions.Builder cwo = CsvWriteOptions.builder("data/links_import.csv");
+        CsvWriteOptions.Builder cwo = CsvWriteOptions.builder(pathToLinks);
         cwo.header(true);
         cwo.separator(';');
 
@@ -177,7 +177,7 @@ public class WhatsappDBToCsv {
         StringColumn etc2 = StringColumn.create("endtime", values);
 
         Table actorTable = Table.create(asc, asc2, asc3, stc2, etc2);
-        cwo = CsvWriteOptions.builder("data/actors_import.csv");
+        cwo = CsvWriteOptions.builder(pathToActors);
         cwo.header(true);
         cwo.separator(';');
         cw.write(actorTable, cwo.build());
@@ -264,5 +264,9 @@ public class WhatsappDBToCsv {
         Statement stmt = conn.createStatement();
         ResultSet results = stmt.executeQuery(sql);
         return Table.read().db(results);
+    }
+
+    public void close() throws SQLException {
+        this.closeDbConnection();
     }
 }

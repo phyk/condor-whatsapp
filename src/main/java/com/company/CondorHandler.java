@@ -6,15 +6,16 @@ import condor.contentprocessor.annotation.turntaking.TimeUnit;
 import condor.data.contract.db.entities.IDataset;
 
 public class CondorHandler {
-    public void connectToCondor(String linkcsv, String actorcsv)
+    public void connectToCondor(String licenseKey, String host, String port, String username, String password,
+                                String database, String linkCsv, String actorCsv, String linkExport, String actorExport)
     {
-        CondorApi condor = new CondorApi("9oi160m0dk8oafa2kkcpgtlbqg", null);
+        CondorApi condor = new CondorApi(licenseKey, null);
 
-        condor.connectToDataBase("localhost", "3306", "root", "OQhpmmqbKBDvvk6k8EP3", "condorTemp");
+        condor.connectToDataBase(host, port, username, password, database);
         String datasetname = "myMessages";
 
         IDataset iDataset = condor.setOrCreateDataset(datasetname);
-        condor.importCSV(actorcsv, linkcsv, iDataset, ";");
+        condor.importCSV(actorCsv, linkCsv, iDataset, ";");
         condor.openDateBase(iDataset);
         condor.calcDegree(false);
         condor.calcBetweenness(false);
@@ -25,17 +26,22 @@ public class CondorHandler {
         condor.calcSentiment("German", true, "content", null, true, true, false);
 
         condor.calcCommunity();
-        condor.exportActors("export.csv", ";", null);
+        condor.exportActors(actorExport, ";", null);
+        condor.exportEdges(linkExport, ";");
+
+        // TODO Filter the Export Strings for personal information
         String fileActor = condor.exportActors(";", null);
         String file = condor.exportEdges(";");
+
         condor.unloadDatasets();
         condor.deleteDataset(iDataset);
     }
 
-    public static void main(String[]args)
+    public static void calculateHonestSignals(String licenseKey, String host, String port, String username, String password,
+                                              String database, String linkCsv, String actorCsv, String linkExport,
+                                              String actorExport)
     {
-        new CondorHandler().connectToCondor("condor_import.csv", "actors.csv");
-        System.out.println("Done");
-        System.exit(0);
+        new CondorHandler().connectToCondor
+                (licenseKey,host, port, username, password, database, linkCsv, actorCsv, linkExport, actorExport);
     }
 }

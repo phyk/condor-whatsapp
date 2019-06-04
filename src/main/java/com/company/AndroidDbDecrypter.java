@@ -2,7 +2,7 @@ package com.company;
 
 /*
  * 
- *** decrypt12.jar: Decrypts WhatsApp msgstore.db.crypt12 files. ***
+ *** AndroidDbDecrypter.jar: Decrypts WhatsApp msgstore.db.crypt12 files. ***
  *
  * Author	:	TripCode
  * Copyright	:	Copyright (C) 2016
@@ -31,7 +31,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 // import org.spongycastle.jce.provider.BouncyCastleProvider; // Android
 
-public class decrypt12 {
+public class AndroidDbDecrypter {
 
 	static {
 		Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 1);
@@ -142,7 +142,7 @@ public class decrypt12 {
 			decrypt(args[0], args[1], outFile);
 		} else {
 			System.out.println("\nWhatsApp Crypt12 Database Decrypter 1.0 Copyright (C) 2016 by TripCode");
-			System.out.println("\tUsage: java -jar decrypt12.jar key msgstore.db.crypt12 msgstore.db\n");
+			System.out.println("\tUsage: java -jar AndroidDbDecrypter.jar key msgstore.db.crypt12 msgstore.db\n");
 		}
 	}
 }
