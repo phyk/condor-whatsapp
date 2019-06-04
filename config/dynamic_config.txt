@@ -1,0 +1,7 @@
+# Dynamic config information to be filled out via a GUI
+#
+mysql_port=
+username=
+password=
+database=
+condor_license=

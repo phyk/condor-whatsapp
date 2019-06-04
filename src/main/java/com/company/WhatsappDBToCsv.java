@@ -47,7 +47,7 @@ public class WhatsappDBToCsv {
     }
 
     public void createCSVExport() throws IOException {
-        String sql = " main.messages._id AS linkid," +
+        String sql = "SELECT main.messages._id AS linkid," +
                 "main.messages.data AS content, " +
                 "main.messages.key_remote_jid as idRef, " +
                 "main.messages.key_from_me as myKey, " +

@@ -19,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
@@ -37,7 +38,7 @@ public class decrypt12 {
 		// Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(), 1); // Android
 	}
 
-	public static String decrypt(String KeyFile, String C12File, String SQLFile) throws Exception {
+	static String decrypt(String KeyFile, String C12File, String SQLFile) throws Exception {
 
 		final File tempFile = new File(System.getProperty("java.io.tmpdir") + "/"
 				+ (int) (System.currentTimeMillis() / 1000L) + "-msgstore.enc");
@@ -69,7 +70,7 @@ public class decrypt12 {
 		byte[] IV = new byte[16];
 		System.arraycopy(C12Data, 51, IV, 0, 16);
 
-		if (!new String(T1, 0, T1.length, "ASCII").equals(new String(T2, 0, T2.length, "ASCII")))
+		if (!new String(T1, 0, T1.length, StandardCharsets.US_ASCII).equals(new String(T2, 0, T2.length, "ASCII")))
 			return ("Key file mismatch or crypt12 file is corrupt.");
 
 		int InputLength = WdbIn.available();
@@ -98,7 +99,7 @@ public class decrypt12 {
 
 		try {
 			FileOutputStream InflateBuffer = new FileOutputStream(SQLFile);
-			int N = 0;
+			int N;
 			byte[] CryptBuffer = new byte[8192];
 
 			while ((N = CryptOutput.read(CryptBuffer)) != -1) {
@@ -121,7 +122,7 @@ public class decrypt12 {
 		System.arraycopy(SqlData, 0, MS, 0, 6);
 		SqlDB.close();
 
-		if (!new String(MS, 0, MS.length, "ASCII").toLowerCase().equals("sqlite")) {
+		if (!new String(MS, 0, MS.length, StandardCharsets.US_ASCII).toLowerCase().equals("sqlite")) {
 			new File(SQLFile).delete();
 			return ("Decryption of crypt12 file has failed.");
 		}
@@ -130,7 +131,7 @@ public class decrypt12 {
 			return ("Decryption of crypt12 file was successful.");
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void thisWasAmain(String[] args) throws Exception {
 
 		String outFile;
 		if (args.length > 1 && args.length < 4) {

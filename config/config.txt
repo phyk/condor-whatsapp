@@ -1,0 +1,12 @@
+# This file contains the standard Paths to the database files
+#
+# db refers to the decrypted database
+standard_db_location=data/msgstore.db
+# key refers to the private key used for encryption
+standard_key_location=data/key
+# encdb refers to the encrypted database
+standard_encdb_location=data/msgstore.db.crypt12
+# standard_export_actors is the file destination of the export (usage in GUI)
+standard_export_actors=export/actors.csv
+# standard_export_links is the file destination of the link export (usage in GUI)
+standard_export_links=export/links.csv
