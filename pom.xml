@@ -29,6 +29,11 @@
             <artifactId>condor</artifactId>
             <version>3.3.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bouncycastle</artifactId>
+            <version>1.62</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -50,7 +55,8 @@
                 <configuration>
                     <mainClass>com.company.WhatsappDBToCsv</mainClass>
                     <arguments>
-                        <argument>C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\Whatsapp\WhatsApp-Crypt12-Decrypter\msgstore.db</argument>
+                        <argument>data/msgstore.db.crypt12</argument>
+                        <argument>data/key</argument>
                     </arguments>
                 </configuration>
             </plugin>

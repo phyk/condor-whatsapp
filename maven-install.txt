@@ -1,2 +1,7 @@
-"C:\Program Files\JetBrains\IntelliJ IDEA 2018.2.3\plugins\maven\lib\maven3\bin\mvn.cmd" install:install-file -Dfile=lib/Condor-3.3.0_whatsapp.jar -DgroupId=com.galaxyadvisor.condor
--DartifactId=condor -Dversion=3.3.0 -Dpackaging=jar -DgeneratePom=true
+"C:\Program Files\JetBrains\IntelliJ IDEA 2018.2.3\plugins\maven\lib\maven3\bin\mvn.cmd" install:install-file -Dfile=lib/Condor-3.3.0_whatsapp.jar
+ -DgroupId=com.galaxyadvisor.condor -DartifactId=condor -Dversion=3.3.0 -Dpackaging=jar -DgeneratePom=true
+
+
+
+"C:\Program Files\JetBrains\IntelliJ IDEA 2018.2.3\plugins\maven\lib\maven3\bin\mvn.cmd" install:install-file -Dfile=lib/bcprov-ext-jdk15on-162.jar
+ -DgroupId=org.bouncycastle -DartifactId=bouncycastle -Dversion=1.62 -Dpackaging=jar -DgeneratePom=true
