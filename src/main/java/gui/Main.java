@@ -1,6 +1,8 @@
 package gui;
 
 import java.io.File;
+import java.net.URL;
+import java.util.List;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -166,10 +168,12 @@ public class Main extends Application{
 
 			
 			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+
+			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
+
 			primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
 			
-			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("uni2.png")));
+			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
 			
 			//stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
 			
