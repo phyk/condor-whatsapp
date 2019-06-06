@@ -28,6 +28,8 @@ public class DynamicConfig {
                 if((!line.startsWith("#")) && (!line.equals("")))
                 {
                     String[] items = line.split("=");
+                    if(items.length < 2)
+                        continue;
                     switch(items[0]){
                         case "mysql_port":
                             mysql_port = items[1];break;
