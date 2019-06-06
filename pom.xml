@@ -78,7 +78,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>com.company.ProcessHandler</mainClass>
+                    <mainClass>gui.Main</mainClass>
                 </configuration>
             </plugin>
 

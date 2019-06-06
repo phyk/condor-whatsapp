@@ -17,11 +17,6 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -168,10 +163,10 @@ public class Main extends Application {
 
 			
 			Scene scene = new Scene(root,400,400);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
 			primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
 			
-			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("uni2.png")));
+			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("uni2.png")));
 			
 			//stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
 			
