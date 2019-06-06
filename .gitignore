@@ -5,3 +5,4 @@ condor-whatsapp.iml
 .project
 .settings
 target/*
+bin/*
