@@ -4,3 +4,4 @@ condor-whatsapp.iml
 .classpath
 .project
 .settings
+target/*
