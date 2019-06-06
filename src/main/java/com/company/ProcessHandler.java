@@ -1,6 +1,7 @@
 package com.company;
 
-import condor.ui.desktop.Condor;
+import shared.DefaultConfig;
+import shared.DynamicConfig;
 
 public class ProcessHandler {
     public static void main(String args[] )

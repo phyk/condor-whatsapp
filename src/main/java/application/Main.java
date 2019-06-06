@@ -166,7 +166,7 @@ public class Main extends Application {
 			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
 			primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
 			
-			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("uni2.png")));
+			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
 			
 			//stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
 			

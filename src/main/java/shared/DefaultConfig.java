@@ -1,4 +1,4 @@
-package com.company;
+package shared;
 
 import java.io.IOException;
 import java.nio.file.Files;

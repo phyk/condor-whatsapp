@@ -1,4 +1,4 @@
-package com.company;
+package shared;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -93,5 +93,33 @@ public class DynamicConfig {
 
     public String getIos_backup_directory() {
         return ios_backup_directory;
+    }
+
+    public void setMysql_port(String mysql_port) {
+        this.mysql_port = mysql_port;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
+
+    public void setCondor_license(String condor_license) {
+        this.condor_license = condor_license;
+    }
+
+    public void setPlatformIsAndroid(boolean platformIsAndroid) {
+        this.platformIsAndroid = platformIsAndroid;
+    }
+
+    public void setIos_backup_directory(String ios_backup_directory) {
+        this.ios_backup_directory = ios_backup_directory;
     }
 }
