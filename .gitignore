@@ -6,3 +6,8 @@ condor-whatsapp.iml
 .settings
 target/*
 bin/*
+WhatsDump/*
+android-sdk/*
+apks/*
+dist/*
+jdk/*

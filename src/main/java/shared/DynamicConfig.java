@@ -13,6 +13,7 @@ public class DynamicConfig {
     private String condor_license;
     private boolean platformIsAndroid;
     private String ios_backup_directory;
+    private String phone_number;
 
     private DynamicConfig(String path)
     {
@@ -45,6 +46,8 @@ public class DynamicConfig {
                             platformIsAndroid = items[1].equals("android");break;
                         case "ios_backup_directory":
                             ios_backup_directory = items[1];break;
+                        case "phonephone_number":
+                            phone_number = items[1];break;
                         default:
                             break;
                     }
@@ -95,6 +98,14 @@ public class DynamicConfig {
 
     public String getIos_backup_directory() {
         return ios_backup_directory;
+    }
+
+    public String getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
     }
 
     public void setMysql_port(String mysql_port) {

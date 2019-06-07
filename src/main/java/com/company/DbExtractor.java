@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
-public class iOsDbExtractor
+public class DbExtractor
 {
     public static void extractDbToDirectory(String pathToBackup, String directoryToCopyTo) throws IOException {
         Path source = findFileInBackup(pathToBackup);
@@ -24,5 +24,15 @@ public class iOsDbExtractor
                     file.endsWith("7c7fba66680ef796b916b067077cc246adacf01d");
         });
         return stream.findAny().get();
+    }
+
+    public static void extractEncryptedDbAndKeyFile(String pathToDb, String pathToKey, String enc_db, String key) throws IOException {
+        Path source = Paths.get(pathToDb);
+        Path target = Paths.get(enc_db);
+        Files.copy(source, target);
+
+        source = Paths.get(pathToKey);
+        target = Paths.get(key);
+        Files.copy(source, target);
     }
 }

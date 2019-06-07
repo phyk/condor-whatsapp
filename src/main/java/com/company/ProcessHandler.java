@@ -6,7 +6,7 @@ import shared.DynamicConfig;
 public class ProcessHandler {
     public static void main(String args[] )
     {
-        DynamicConfig dc = DynamicConfig.create();
+        DynamicConfig dc = DynamicConfig.create("dynamic_config_my.txt");
         DefaultConfig df = DefaultConfig.create();
 
         if(dc.isPlatformIsAndroid())
@@ -23,7 +23,7 @@ public class ProcessHandler {
     {
         try {
             // Copy Whatsapp Database from unencrypted iPhone Backup to local data folder
-            iOsDbExtractor.extractDbToDirectory(dc.getIos_backup_directory(), "data");
+            DbExtractor.extractDbToDirectory(dc.getIos_backup_directory(), "data");
 
             // Use local sqlite Database to generate condor-readable import
 
@@ -37,6 +37,11 @@ public class ProcessHandler {
     {
         // Get key file and encrypted database to local data folder
         try {
+            // Copy the file to the data directory
+            DbExtractor.extractEncryptedDbAndKeyFile(
+                    "output/"+dc.getPhone_number().substring(3)+"/msgstore.db.crypt12",
+                    "output/"+dc.getPhone_number().substring(3)+"/key",
+                    df.getStandard_encdb_location(), df.getStandard_key_location());
 
             // Decrypt the database
             String message = AndroidDbDecrypter.decrypt(df.getStandard_key_location(), df.getStandard_encdb_location(),

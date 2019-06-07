@@ -5,3 +5,8 @@ username=
 password=
 database=
 condor_license=
+# either 'android' or 'ios'
+platform=
+ios_backup_directory=
+# format +49<number without leading 0>
+phone_number=
