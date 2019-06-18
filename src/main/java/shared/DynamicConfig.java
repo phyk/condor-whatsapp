@@ -1,29 +1,48 @@
 package shared;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class DynamicConfig {
-    private String mysql_port;
-    private String username;
-    private String password;
-    private String database;
-    private String condor_license;
-    private boolean platformIsAndroid;
-    private String ios_backup_directory;
-    private String phone_number;
+    private StringProperty path;
+    private StringProperty mysql_port;
+    private StringProperty username;
+    private StringProperty password;
+    private StringProperty database;
+    private StringProperty condor_license;
+    private BooleanProperty platformIsAndroid;
+    private StringProperty ios_backup_directory;
+    private StringProperty phone_number;
 
-    private DynamicConfig(String path)
+    private DynamicConfig(String path, boolean empty)
     {
-        readConfigFromFile(path);
+        this.path = new SimpleStringProperty();
+        this.mysql_port = new SimpleStringProperty();
+        this.username = new SimpleStringProperty();
+        this.password = new SimpleStringProperty();
+        this.database = new SimpleStringProperty();
+        this.condor_license = new SimpleStringProperty();
+        this.ios_backup_directory = new SimpleStringProperty();
+        this.phone_number = new SimpleStringProperty();
+        this.platformIsAndroid = new SimpleBooleanProperty();
+
+        this.path.setValue(path);
+        if(!empty)
+            readConfigFromFile();
     }
 
-    private void readConfigFromFile(String path)
+    private void readConfigFromFile()
     {
         try {
-            ArrayList<String> configFile = new ArrayList<String>(Files.readAllLines(Paths.get(path)));
+            ArrayList<String> configFile = new ArrayList<String>(Files.readAllLines(Paths.get(path.getValue())));
             for (String line :
                     configFile) {
                 if((!line.startsWith("#")) && (!line.equals("")))
@@ -33,21 +52,21 @@ public class DynamicConfig {
                         continue;
                     switch(items[0]){
                         case "mysql_port":
-                            mysql_port = items[1];break;
+                            mysql_port.setValue(items[1]);break;
                         case "username":
-                            username = items[1];break;
+                            username.setValue(items[1]);break;
                         case "password":
-                            password = items[1];break;
+                            password.setValue(items[1]);break;
                         case "database":
-                            database = items[1];break;
+                            database.setValue(items[1]);break;
                         case "condor_license":
-                            condor_license = items[1];break;
+                            condor_license.setValue(items[1]);break;
                         case "platform":
-                            platformIsAndroid = items[1].equals("android");break;
+                            platformIsAndroid.setValue(items[1].equals("android"));break;
                         case "ios_backup_directory":
-                            ios_backup_directory = items[1];break;
-                        case "phonephone_number":
-                            phone_number = items[1];break;
+                            ios_backup_directory.setValue(items[1]);break;
+                        case "phone_number":
+                            phone_number.setValue(items[1]);break;
                         default:
                             break;
                     }
@@ -58,11 +77,36 @@ public class DynamicConfig {
         }
     }
 
-    public static DynamicConfig create(String path)
+    private void writeConfigToFile()
     {
-        return new DynamicConfig(path);
+        try(FileWriter fw = new FileWriter(path.getValue(), false))
+        {
+            fw.write("# Dynamic config information to be filled out via a GUI\r\n" +
+                    "#\r\n");
+            fw.write("mysql_port="+this.mysql_port.getValue()+"\r\n");
+            fw.write("username="+this.username.getValue()+"\r\n");
+            fw.write("password="+this.password.getValue()+"\r\n");
+            fw.write("database="+this.database.getValue()+"\r\n");
+            fw.write("condor_license="+this.condor_license.getValue()+"\r\n");
+            fw.write("# either 'android' or 'ios'\r\n");
+            fw.write("platform="+(this.platformIsAndroid.getValue()?"android":"ios")+"\r\n");
+            fw.write("ios_backup_directory="+this.ios_backup_directory.getValue()+"\r\n");
+            fw.write("# format +49<number without leading 0>\r\n");
+            fw.write("phone_number="+this.phone_number.getValue()+"\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    public static DynamicConfig create(String path)
+    {
+        return new DynamicConfig(path, false);
+    }
+
+    public static DynamicConfig createEmpty(String path)
+    {
+        return new DynamicConfig(path, true);
+    }
     /**
      * Uses the default path 'config/config.txt'
      * @return
@@ -72,67 +116,111 @@ public class DynamicConfig {
         return create("config/dynamic_config.txt");
     }
 
-    public String getMysql_port() {
+    public String getPath() {
+        return path.get();
+    }
+
+    public StringProperty pathProperty() {
+        return path;
+    }
+
+    public StringProperty mysql_portProperty() {
         return mysql_port;
     }
 
-    public String getUsername() {
+    public StringProperty usernameProperty() {
         return username;
     }
 
-    public String getPassword() {
+    public StringProperty passwordProperty() {
         return password;
     }
 
-    public String getDatabase() {
+    public StringProperty databaseProperty() {
         return database;
     }
 
-    public String getCondor_license() {
+    public StringProperty condor_licenseProperty() {
         return condor_license;
     }
 
-    public boolean isPlatformIsAndroid() {
+    public BooleanProperty platformIsAndroidProperty() {
         return platformIsAndroid;
     }
 
-    public String getIos_backup_directory() {
+    public StringProperty ios_backup_directoryProperty() {
         return ios_backup_directory;
     }
 
-    public String getPhone_number() {
+    public StringProperty phone_numberProperty() {
         return phone_number;
     }
 
+    public String getMysql_port() {
+        return mysql_port.getValue();
+    }
+
+    public String getUsername() {
+        return username.getValue();
+    }
+
+    public String getPassword() {
+        return password.getValue();
+    }
+
+    public String getDatabase() {
+        return database.getValue();
+    }
+
+    public String getCondor_license() {
+        return condor_license.getValue();
+    }
+
+    public boolean isPlatformIsAndroid() {
+        return platformIsAndroid.getValue();
+    }
+
+    public String getIos_backup_directory() {
+        return ios_backup_directory.getValue();
+    }
+
+    public String getPhone_number() {
+        return phone_number.getValue();
+    }
+
     public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+        this.phone_number.setValue(phone_number);
     }
 
     public void setMysql_port(String mysql_port) {
-        this.mysql_port = mysql_port;
+        this.mysql_port.setValue(mysql_port);
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username.setValue(username);
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password.setValue(password);
     }
 
     public void setDatabase(String database) {
-        this.database = database;
+        this.database.setValue(database);
     }
 
     public void setCondor_license(String condor_license) {
-        this.condor_license = condor_license;
+        this.condor_license.setValue(condor_license);
     }
 
     public void setPlatformIsAndroid(boolean platformIsAndroid) {
-        this.platformIsAndroid = platformIsAndroid;
+        this.platformIsAndroid.setValue(platformIsAndroid);
     }
 
     public void setIos_backup_directory(String ios_backup_directory) {
-        this.ios_backup_directory = ios_backup_directory;
+        this.ios_backup_directory.setValue(ios_backup_directory);
+    }
+
+    public void close() {
+        this.writeConfigToFile();
     }
 }

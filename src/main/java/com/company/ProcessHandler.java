@@ -1,16 +1,24 @@
 package com.company;
 
+import javafx.concurrent.Task;
 import shared.DefaultConfig;
 import shared.DynamicConfig;
 
-public class ProcessHandler {
-    public static void main(String args[] )
+public class ProcessHandler extends Task {
+    private DynamicConfig dc;
+    private DefaultConfig df;
+
+    public ProcessHandler(DynamicConfig dc, DefaultConfig df)
     {
-        DynamicConfig dc = DynamicConfig.create("dynamic_config_my.txt");
-        DefaultConfig df = DefaultConfig.create();
+        this.dc = dc;
+        this.df = df;
+    }
+    public void start()
+    {
 
         if(dc.isPlatformIsAndroid())
         {
+
             handleAndroidWhatsapp(dc, df);
         }
         else
@@ -23,10 +31,18 @@ public class ProcessHandler {
     {
         try {
             // Copy Whatsapp Database from unencrypted iPhone Backup to local data folder
-            DbExtractor.extractDbToDirectory(dc.getIos_backup_directory(), "data");
+            //DbExtractor.extractDbToDirectory(dc.getIos_backup_directory(), "data");
 
             // Use local sqlite Database to generate condor-readable import
+            WhatsappDBToCsv wcs = WhatsappDBToCsv.create(df.getStandard_db_location());
+            wcs.createCSVExportIos(df.getStandard_temp_links(), df.getStandard_temp_actors());
+            wcs.close();
 
+            // After condor import generation, import the data to Condor and calculate the Honest Signals
+            // Thereafter export the csv Files to the export folder
+            CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysql_port(),
+                    dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
+                    df.getStandard_export_links(), df.getStandard_export_actors());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +66,7 @@ public class ProcessHandler {
             // If decryption worked, generate condor temporary import
             if(message.equals("Decryption of crypt12 file was successful.")) {
                 WhatsappDBToCsv wcs = WhatsappDBToCsv.create(df.getStandard_db_location());
-                wcs.createCSVExport(df.getStandard_temp_links(), df.getStandard_temp_actors());
+                wcs.createCSVExportAndroid(df.getStandard_temp_links(), df.getStandard_temp_actors());
                 wcs.close();
 
                 // After condor import generation, import the data to Condor and calculate the Honest Signals
@@ -62,10 +78,11 @@ public class ProcessHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        terminateProgram();
     }
 
-    private static void terminateProgram() {
-        System.exit(0);
+    @Override
+    protected Object call() throws Exception {
+        this.start();
+        return null;
     }
 }

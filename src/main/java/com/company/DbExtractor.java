@@ -1,19 +1,18 @@
 package com.company;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class DbExtractor
 {
     public static void extractDbToDirectory(String pathToBackup, String directoryToCopyTo) throws IOException {
         Path source = findFileInBackup(pathToBackup);
         Path target = Paths.get(directoryToCopyTo+"/msgstore.db");
-        Files.copy(source, target);
+        Files.copy(source, target, REPLACE_EXISTING);
     }
 
     private static Path findFileInBackup(String pathToBackup) throws IOException {
@@ -29,10 +28,10 @@ public class DbExtractor
     public static void extractEncryptedDbAndKeyFile(String pathToDb, String pathToKey, String enc_db, String key) throws IOException {
         Path source = Paths.get(pathToDb);
         Path target = Paths.get(enc_db);
-        Files.copy(source, target);
+        Files.copy(source, target, REPLACE_EXISTING);
 
         source = Paths.get(pathToKey);
         target = Paths.get(key);
-        Files.copy(source, target);
+        Files.copy(source, target, REPLACE_EXISTING);
     }
 }

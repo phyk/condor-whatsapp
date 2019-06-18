@@ -1,37 +1,49 @@
 package application;
 	
 import java.io.File;
+import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import com.company.ProcessHandler;
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import shared.DefaultConfig;
+import shared.DynamicConfig;
 
 
 public class Main extends Application {
 	
-    private String mysql_port;
-    private String username;
-    private String password;
-    private String database;
-    private String condor_license;
-    private boolean platformIsAndroid;
-    private String ios_backup_directory;
+    private TextField mysql_port = new TextField("3306");
+    private TextField username = new TextField("root");
+    private TextField password = new PasswordField();
+    private TextField database = new TextField("condor_temp");
+    private TextField condor_license = new TextField("");
+    private TextField phone_number = new TextField("");
+    private RadioButton platformIsAndroid = new RadioButton("Android");
+    private TextField ios_backup_directory = new TextField("");
+
+    private ProcessHandler dbProcess;
 	
 	
 	@Override
@@ -43,31 +55,38 @@ public class Main extends Application {
 			Label labelPort = new Label("MySQL Port:");
 			labelPort.setTextFill(Color.WHITE);
 			portBox.getChildren().add(labelPort);
-			portBox.getChildren().add(new TextField(mysql_port));
+			portBox.getChildren().add(mysql_port);
+
 			
 			VBox usernameBox = new VBox();
 			Label labelUser = new Label("Username:");
 			labelUser.setTextFill(Color.WHITE);
 			usernameBox.getChildren().add(labelUser);
-			usernameBox.getChildren().add(new TextField(username));
+			usernameBox.getChildren().add(username);
 			
 			VBox passwordBox = new VBox();
 			Label labelPassword = new Label("Password:");
 			labelPassword.setTextFill(Color.WHITE);
 			passwordBox.getChildren().add(labelPassword);
-			passwordBox.getChildren().add(new PasswordField());
+			passwordBox.getChildren().add(password);
 			
 			VBox databaseBox = new VBox();
 			Label labelDatabase = new Label("Database:");
 			labelDatabase.setTextFill(Color.WHITE);
 			databaseBox.getChildren().add(labelDatabase);
-			databaseBox.getChildren().add(new TextField(database));
-			
-			VBox condorLicenceBox = new VBox();
-			Label labelLicence = new Label("Condor Licence:");
+			databaseBox.getChildren().add(database);
+
+            VBox phoneNumberBox = new VBox();
+            Label labelPhoneNumber = new Label("Phone Number:");
+            labelPhoneNumber.setTextFill(Color.WHITE);
+            phoneNumberBox.getChildren().add(labelPhoneNumber);
+            phoneNumberBox.getChildren().add(phone_number);
+
+			VBox condorLicenseBox = new VBox();
+			Label labelLicence = new Label("Condor License:");
 			labelLicence.setTextFill(Color.WHITE);
-			condorLicenceBox.getChildren().add(labelLicence);
-			condorLicenceBox.getChildren().add(new TextField(condor_license));
+			condorLicenseBox.getChildren().add(labelLicence);
+			condorLicenseBox.getChildren().add(condor_license);
 			
 			VBox directoryBox = new VBox();
 			TextField dir = new TextField();
@@ -106,10 +125,9 @@ public class Main extends Application {
 	        
 	        final ToggleGroup group = new ToggleGroup();
 
-	        RadioButton rbAndroid = new RadioButton("Android");
-	        rbAndroid.setToggleGroup(group);
-	        rbAndroid.setTextFill(Color.WHITE);
-	        rbAndroid.setSelected(true);
+	        platformIsAndroid.setToggleGroup(group);
+	        platformIsAndroid.setTextFill(Color.WHITE);
+	        platformIsAndroid.setSelected(true);
 
 	        RadioButton rbIOS = new RadioButton("IOS (Iphone)");
 	        rbIOS.setTextFill(Color.WHITE);
@@ -126,7 +144,7 @@ public class Main extends Application {
 	        });
 	        
 	        HBox toggleBox = new HBox();
-	        toggleBox.getChildren().add(rbAndroid);
+	        toggleBox.getChildren().add(platformIsAndroid);
 	        toggleBox.getChildren().add(rbIOS);
 	        toggleBox.setSpacing(10);
 	        
@@ -139,6 +157,29 @@ public class Main extends Application {
 	        
 			VBox continueBox = new VBox();
 			Button continueButton = new Button("Continue");
+
+            EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
+                public void handle(InputEvent event) {
+                    if(checkFieldsValid(mysql_port, username, password, database, condor_license, platformIsAndroid,
+                            ios_backup_directory, phone_number)) {
+                        DynamicConfig dc = DynamicConfig.createEmpty("config/dynConf.txt");
+                        dc.setCondor_license(condor_license.getText());
+                        dc.setDatabase(database.getText());
+                        dc.setIos_backup_directory(ios_backup_directory.getText());
+                        dc.setMysql_port(mysql_port.getText());
+                        dc.setPassword(password.getText());
+                        dc.setUsername(username.getText());
+                        dc.setPlatformIsAndroid(platformIsAndroid.isSelected());
+                        dc.setPhone_number(phone_number.getText());
+                        dc.close();
+                        dbProcess = new ProcessHandler(dc, DefaultConfig.create());
+                        Thread th = new Thread(dbProcess);
+                        th.start();
+                    }
+                }
+            };
+
+			continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
 			continueBox.getChildren().add(continueButton);
 			continueBox.setPadding(new Insets(20));
 			//continueBox.setStyle("-fx-background-color: black;");
@@ -152,6 +193,8 @@ public class Main extends Application {
 			settingsBox.getChildren().add(usernameBox);
 			settingsBox.getChildren().add(passwordBox);
 			settingsBox.getChildren().add(databaseBox);
+            settingsBox.getChildren().add(condorLicenseBox);
+			settingsBox.getChildren().add(phoneNumberBox);
 			settingsBox.getChildren().add(osSelectionBox);
 			settingsBox.getChildren().add(directoryBox);
 			//settingsBox.getChildren().add(continueButton);
@@ -162,7 +205,7 @@ public class Main extends Application {
 			
 
 			
-			Scene scene = new Scene(root,400,400);
+			Scene scene = new Scene(root,400,450);
 			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
 			primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
 			
@@ -177,8 +220,55 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String[] args) {
+
+    private boolean checkFieldsValid(TextField portBox, TextField usernameBox, TextField passwordBox, TextField databaseBox,
+                                  TextField condorLicenceBox, RadioButton toggleBox, TextField directoryBox, TextField phoneNumberBox) {
+	    boolean everythingChecked = true;
+        Pattern numbers = Pattern.compile(".[0-9]+");
+        Matcher m = numbers.matcher(portBox.getText());
+	    if(!m.matches())
+        {
+            everythingChecked = false;
+        }
+        m = numbers.matcher(phoneNumberBox.getText());
+	    if(!m.matches())
+        {
+            everythingChecked = false;
+        }
+        if(usernameBox.getText().equals(""))
+        {
+            everythingChecked = false;
+        }
+        if(passwordBox.getText().equals(""))
+        {
+            everythingChecked = false;
+        }
+        if(databaseBox.getText().equals(""))
+        {
+            everythingChecked = false;
+        }
+        if (condorLicenceBox.getText().equals(""))
+        {
+            everythingChecked = false;
+        }
+        if (toggleBox.isSelected())
+        {
+            if(directoryBox.getText().equals(""))
+            {
+                everythingChecked = false;
+            }
+            else
+            {
+                if(!Paths.get(directoryBox.getText()).toFile().exists())
+                {
+                    everythingChecked = false;
+                }
+            }
+        }
+        return everythingChecked;
+    }
+
+    public static void main(String[] args) {
 		launch(args);
 	}
 }

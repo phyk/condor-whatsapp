@@ -72,7 +72,7 @@
                     </excludes>
                     <archive>
                         <manifest>
-                            <mainClass>com.company.ProcessHandler</mainClass>
+                            <mainClass>application.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -83,7 +83,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <mainClass>com.company.ProcessHandler</mainClass>
+                    <mainClass>application.Main</mainClass>
                 </configuration>
             </plugin>
 

@@ -35,6 +35,7 @@ public class CondorHandler {
 
         condor.unloadDatasets();
         condor.deleteDataset(iDataset);
+        System.exit(0);
     }
 
     public static void calculateHonestSignals(String licenseKey, String host, String port, String username, String password,
