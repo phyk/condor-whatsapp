@@ -25,16 +25,16 @@ public class DynamicConfig {
 
     private DynamicConfig(String path, boolean empty)
     {
-        this.path = new SimpleStringProperty();
-        this.mysqlPort = new SimpleStringProperty();
-        this.username = new SimpleStringProperty();
-        this.password = new SimpleStringProperty();
-        this.database = new SimpleStringProperty();
-        this.condorLicense = new SimpleStringProperty();
-        this.iosBackupDirectory = new SimpleStringProperty();
-        this.phoneNumber = new SimpleStringProperty();
+        this.path = new SimpleStringProperty("");
+        this.mysqlPort = new SimpleStringProperty("");
+        this.username = new SimpleStringProperty("");
+        this.password = new SimpleStringProperty("");
+        this.database = new SimpleStringProperty("");
+        this.condorLicense = new SimpleStringProperty("");
+        this.iosBackupDirectory = new SimpleStringProperty("");
+        this.phoneNumber = new SimpleStringProperty("");
         this.platformIsAndroid = new SimpleBooleanProperty();
-        this.mySqlHost = new SimpleStringProperty();
+        this.mySqlHost = new SimpleStringProperty("");
 
         this.path.setValue(path);
         if(!empty)

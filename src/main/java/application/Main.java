@@ -4,9 +4,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import com.badlogic.gdx.Input;
-import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
-import com.jogamp.newt.event.KeyEvent;
 import javafx.application.Application;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
@@ -24,8 +21,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import com.company.ProcessHandler;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.MouseEvent;
@@ -99,17 +94,6 @@ public class Main extends Application {
 			root.setBottom(continueBox);
 	        
 			VBox continueBox = new VBox();
-			continueFromDatabaseSettingsButton = new Button("Continue");
-
-            EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
-                public void handle(InputEvent event) {
-                    {
-                         progressScene(primaryStage);
-                    }
-                }
-            };
-
-            continueFromDatabaseSettingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
 			continueBox.getChildren().add(continueFromDatabaseSettingsButton);
 			continueBox.setPadding(new Insets(20));
 			//continueBox.setStyle("-fx-background-color: black;");
@@ -152,7 +136,7 @@ public class Main extends Application {
         dc.setUsername(tfusername.getText());
         dc.setPlatformIsAndroid(platformIsAndroid);
         dc.setPhoneNumber(tfPhoneNumber.getText());
-        dc.close();
+
         dbProcess = new ProcessHandler(dc, DefaultConfig.create());
         dbProcess.messageProperty().addListener((observable, oldValue, newValue) -> {
             log.trace(newValue);
@@ -388,14 +372,15 @@ public class Main extends Application {
 		continueFromDatabaseSettingsButton.setPrefWidth(100);
 		continueFromDatabaseSettingsButton.alignmentProperty().set(Pos.CENTER_RIGHT);
 
-		continueFromDatabaseSettingsButton.setOnAction( e -> {
+		continueFromDatabaseSettingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
 			if(tfMysqlHost.getText().isEmpty() || tfMysqlPort.getText().isEmpty() || tfusername.getText().isEmpty() ||
                     tfDatabase.getText().isEmpty() || tfCondorLicense.getText().isEmpty() || pf.getText().isEmpty() ||
                     tfPhoneNumber.getText().isEmpty()) {
 				Alert alert = new Alert(AlertType.ERROR, "Please fill in all required fields", ButtonType.OK);
 				alert.showAndWait();
 			}
-			//TODO check if phone number has correct format 
+			else
+				progressScene(primaryStage);
 		});
 
 		
