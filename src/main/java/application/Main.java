@@ -96,7 +96,7 @@ public class Main extends Application {
 			root.setBottom(continueBox);
 	        
 			VBox continueBox = new VBox();
-			Button continueButton = new Button("Continue");
+			continueFromDatabaseSettingsButton = new Button("Continue");
 
             EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
                 public void handle(InputEvent event) {
@@ -127,12 +127,12 @@ public class Main extends Application {
                 }
             };
 
-			continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
-			continueBox.getChildren().add(continueButton);
+            continueFromDatabaseSettingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
+			continueBox.getChildren().add(continueFromDatabaseSettingsButton);
 			continueBox.setPadding(new Insets(20));
 			//continueBox.setStyle("-fx-background-color: black;");
 			continueBox.alignmentProperty().set(Pos.CENTER);
-			continueButton.setPrefWidth(200);
+            continueFromDatabaseSettingsButton.setPrefWidth(200);
 
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
