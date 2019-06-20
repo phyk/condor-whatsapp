@@ -1,7 +1,6 @@
 package com.company;
 
 import javafx.concurrent.Task;
-import org.apache.commons.logging.impl.Log4JLogger;
 import shared.DefaultConfig;
 import shared.DynamicConfig;
 
@@ -32,7 +31,7 @@ public class ProcessHandler extends Task {
         this.updateMessage("Handling IOs Data");
         try {
             // Copy Whatsapp Database from unencrypted iPhone Backup to local data folder
-            DbExtractor.extractDbToDirectory(dc.getIos_backup_directory(), "data");
+            DbExtractor.extractDbToDirectory(dc.getIosBackupDirectory(), "data");
 
             this.updateMessage("Extracted db from directory");
             this.updateMessage("Starting extraction of message data");
@@ -44,7 +43,7 @@ public class ProcessHandler extends Task {
             this.updateMessage("Calculating honest signals");
             // After condor import generation, import the data to Condor and calculate the Honest Signals
             // Thereafter export the csv Files to the export folder
-            CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysql_port(),
+            CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysqlPort(),
                     dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                     df.getStandard_export_links(), df.getStandard_export_actors(), this);
             this.updateMessage("Calculated honest signals");
@@ -61,8 +60,8 @@ public class ProcessHandler extends Task {
             this.updateMessage("Moving the key file and the database to the intermediate directory");
             // Copy the file to the data directory
             DbExtractor.extractEncryptedDbAndKeyFile(
-                    "output/"+dc.getPhone_number().substring(3)+"/msgstore.db.crypt12",
-                    "output/"+dc.getPhone_number().substring(3)+"/key",
+                    "output/"+dc.getPhoneNumber().substring(3)+"/msgstore.db.crypt12",
+                    "output/"+dc.getPhoneNumber().substring(3)+"/key",
                     df.getStandard_encdb_location(), df.getStandard_key_location());
             this.updateMessage("Moved the key file and the database");
             this.updateMessage("Decrypting the database");
@@ -81,7 +80,7 @@ public class ProcessHandler extends Task {
                 this.updateMessage("Starting calculation of honest signals");
                 // After condor import generation, import the data to Condor and calculate the Honest Signals
                 // Thereafter export the csv Files to the export folder
-                CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysql_port(),
+                CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysqlPort(),
                         dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                         df.getStandard_export_links(), df.getStandard_export_actors(), this);
             }

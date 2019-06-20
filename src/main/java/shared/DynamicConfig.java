@@ -13,26 +13,28 @@ import java.util.ArrayList;
 
 public class DynamicConfig {
     private StringProperty path;
-    private StringProperty mysql_port;
+    private StringProperty mysqlPort;
     private StringProperty username;
     private StringProperty password;
     private StringProperty database;
-    private StringProperty condor_license;
+    private StringProperty condorLicense;
     private BooleanProperty platformIsAndroid;
-    private StringProperty ios_backup_directory;
-    private StringProperty phone_number;
+    private StringProperty iosBackupDirectory;
+    private StringProperty phoneNumber;
+    private StringProperty mySqlHost;
 
     private DynamicConfig(String path, boolean empty)
     {
         this.path = new SimpleStringProperty();
-        this.mysql_port = new SimpleStringProperty();
+        this.mysqlPort = new SimpleStringProperty();
         this.username = new SimpleStringProperty();
         this.password = new SimpleStringProperty();
         this.database = new SimpleStringProperty();
-        this.condor_license = new SimpleStringProperty();
-        this.ios_backup_directory = new SimpleStringProperty();
-        this.phone_number = new SimpleStringProperty();
+        this.condorLicense = new SimpleStringProperty();
+        this.iosBackupDirectory = new SimpleStringProperty();
+        this.phoneNumber = new SimpleStringProperty();
         this.platformIsAndroid = new SimpleBooleanProperty();
+        this.mySqlHost = new SimpleStringProperty();
 
         this.path.setValue(path);
         if(!empty)
@@ -51,22 +53,24 @@ public class DynamicConfig {
                     if(items.length < 2)
                         continue;
                     switch(items[0]){
-                        case "mysql_port":
-                            mysql_port.setValue(items[1]);break;
+                        case "mysqlPort":
+                            mysqlPort.setValue(items[1]);break;
                         case "username":
                             username.setValue(items[1]);break;
                         case "password":
                             password.setValue(items[1]);break;
                         case "database":
                             database.setValue(items[1]);break;
-                        case "condor_license":
-                            condor_license.setValue(items[1]);break;
+                        case "condorLicense":
+                            condorLicense.setValue(items[1]);break;
                         case "platform":
                             platformIsAndroid.setValue(items[1].equals("android"));break;
-                        case "ios_backup_directory":
-                            ios_backup_directory.setValue(items[1]);break;
-                        case "phone_number":
-                            phone_number.setValue(items[1]);break;
+                        case "iosBackupDirectory":
+                            iosBackupDirectory.setValue(items[1]);break;
+                        case "phoneNumber":
+                            phoneNumber.setValue(items[1]);break;
+                        case "mysqlHost":
+                            mySqlHost.setValue(items[1]);break;
                         default:
                             break;
                     }
@@ -83,16 +87,17 @@ public class DynamicConfig {
         {
             fw.write("# Dynamic config information to be filled out via a GUI\r\n" +
                     "#\r\n");
-            fw.write("mysql_port="+this.mysql_port.getValue()+"\r\n");
+            fw.write("mysqlPort="+this.mysqlPort.getValue()+"\r\n");
+            fw.write("mysqlHost="+this.mySqlHost.getValue()+"\r\n");
             fw.write("username="+this.username.getValue()+"\r\n");
             fw.write("password="+this.password.getValue()+"\r\n");
             fw.write("database="+this.database.getValue()+"\r\n");
-            fw.write("condor_license="+this.condor_license.getValue()+"\r\n");
+            fw.write("condorLicense="+this.condorLicense.getValue()+"\r\n");
             fw.write("# either 'android' or 'ios'\r\n");
             fw.write("platform="+(this.platformIsAndroid.getValue()?"android":"ios")+"\r\n");
-            fw.write("ios_backup_directory="+this.ios_backup_directory.getValue()+"\r\n");
+            fw.write("iosBackupDirectory="+this.iosBackupDirectory.getValue()+"\r\n");
             fw.write("# format +49<number without leading 0>\r\n");
-            fw.write("phone_number="+this.phone_number.getValue()+"\r\n");
+            fw.write("phoneNumber="+this.phoneNumber.getValue()+"\r\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -124,8 +129,8 @@ public class DynamicConfig {
         return path;
     }
 
-    public StringProperty mysql_portProperty() {
-        return mysql_port;
+    public StringProperty mysqlPortProperty() {
+        return mysqlPort;
     }
 
     public StringProperty usernameProperty() {
@@ -141,23 +146,29 @@ public class DynamicConfig {
     }
 
     public StringProperty condor_licenseProperty() {
-        return condor_license;
+        return condorLicense;
     }
 
     public BooleanProperty platformIsAndroidProperty() {
         return platformIsAndroid;
     }
 
-    public StringProperty ios_backup_directoryProperty() {
-        return ios_backup_directory;
+    public StringProperty iosBackupDirectoryProperty() {
+        return iosBackupDirectory;
     }
 
-    public StringProperty phone_numberProperty() {
-        return phone_number;
+    public StringProperty phoneNumberProperty() {
+        return phoneNumber;
     }
 
-    public String getMysql_port() {
-        return mysql_port.getValue();
+    public String getMysqlHost() { return mySqlHost.getValue(); }
+
+    public void setMysqlHost(String host) {
+        mySqlHost.setValue(host);
+    }
+
+    public String getMysqlPort() {
+        return mysqlPort.getValue();
     }
 
     public String getUsername() {
@@ -173,27 +184,27 @@ public class DynamicConfig {
     }
 
     public String getCondor_license() {
-        return condor_license.getValue();
+        return condorLicense.getValue();
     }
 
     public boolean isPlatformIsAndroid() {
         return platformIsAndroid.getValue();
     }
 
-    public String getIos_backup_directory() {
-        return ios_backup_directory.getValue();
+    public String getIosBackupDirectory() {
+        return iosBackupDirectory.getValue();
     }
 
-    public String getPhone_number() {
-        return phone_number.getValue();
+    public String getPhoneNumber() {
+        return phoneNumber.getValue();
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number.setValue(phone_number);
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber.setValue(phoneNumber);
     }
 
-    public void setMysql_port(String mysql_port) {
-        this.mysql_port.setValue(mysql_port);
+    public void setMysqlPort(String mysqlPort) {
+        this.mysqlPort.setValue(mysqlPort);
     }
 
     public void setUsername(String username) {
@@ -209,15 +220,15 @@ public class DynamicConfig {
     }
 
     public void setCondor_license(String condor_license) {
-        this.condor_license.setValue(condor_license);
+        this.condorLicense.setValue(condor_license);
     }
 
     public void setPlatformIsAndroid(boolean platformIsAndroid) {
         this.platformIsAndroid.setValue(platformIsAndroid);
     }
 
-    public void setIos_backup_directory(String ios_backup_directory) {
-        this.ios_backup_directory.setValue(ios_backup_directory);
+    public void setIosBackupDirectory(String iosBackupDirectory) {
+        this.iosBackupDirectory.setValue(iosBackupDirectory);
     }
 
     public void close() {
