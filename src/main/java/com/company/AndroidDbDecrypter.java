@@ -28,10 +28,14 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 // import org.spongycastle.jce.provider.BouncyCastleProvider; // Android
 
 public class AndroidDbDecrypter {
+
+	private static Logger log = LogManager.getLogger("condor-whatsapp-main");
 
 	static {
 		Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 1);
@@ -109,7 +113,7 @@ public class AndroidDbDecrypter {
 			InflateBuffer.close();
 
 		} catch (IOException ex) {
-			return ("Fatal error:" + ex);
+			log.error(ex.getStackTrace());
 		}
 
 		CipherStream.close();

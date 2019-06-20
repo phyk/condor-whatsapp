@@ -1,12 +1,24 @@
 package com.company;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
+import javafx.event.EventType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shared.DefaultConfig;
 import shared.DynamicConfig;
 
 public class ProcessHandler extends Task {
     private DynamicConfig dc;
     private DefaultConfig df;
+    private static Logger log = LogManager.getLogger("condor-whatsapp-main");
+    private AndroidWhatsdumpAdapter awa;
+    private SimpleBooleanProperty requestCommand;
+    private SimpleBooleanProperty isDone;
 
     public ProcessHandler(DynamicConfig dc, DefaultConfig df)
     {
@@ -48,7 +60,7 @@ public class ProcessHandler extends Task {
                     df.getStandard_export_links(), df.getStandard_export_actors(), this);
             this.updateMessage("Calculated honest signals");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
     }
 
@@ -56,7 +68,30 @@ public class ProcessHandler extends Task {
     {
         this.updateMessage("Handling Android Data");
         // Get key file and encrypted database to local data folder
+        awa = new AndroidWhatsdumpAdapter(dc.getPhoneNumber());
+        requestCommand = awa.requestInputProperty();
+        isDone = awa.isDoneProperty();
+        requestCommand.addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+            {
+                this.updateMessage("Requesting User Input");
+            }
+        });
+        isDone.addListener((observable, oldValue, newValue) -> {
+            if(newValue)
+            {
+                this.updateMessage("Successfully extracted keyfile and db");
+            }
+        });
+        Thread sub = new Thread(awa);
+        sub.start();
+
         try {
+            while(!awa.isDoneProperty().getValue())
+            {
+                Thread.sleep(500);
+            }
+
             this.updateMessage("Moving the key file and the database to the intermediate directory");
             // Copy the file to the data directory
             DbExtractor.extractEncryptedDbAndKeyFile(
@@ -83,15 +118,25 @@ public class ProcessHandler extends Task {
                 CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysqlPort(),
                         dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                         df.getStandard_export_links(), df.getStandard_export_actors(), this);
+                this.updateMessage("Honest Signals calculated");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
     }
 
     public void passMessage(String message)
     {
         this.updateMessage(message);
+        if(message.equals("[INFO] Private key extracted in C:\\Users\\Philipp\\Documents\\StudDocs\\Master\\SS2019\\COINSeminar\\condor-whatsapp\\output\\15753363836\\key"))
+        {
+            awa.isDoneProperty().set(true);
+        }
+    }
+
+    public void passCommand(String command)
+    {
+        awa.runCommand(command);
     }
 
     @Override

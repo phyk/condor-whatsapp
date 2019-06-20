@@ -1,22 +1,25 @@
 package application;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+
+import com.badlogic.gdx.Input;
+import com.fasterxml.jackson.jaxrs.json.annotation.JSONP;
+import com.jogamp.newt.event.KeyEvent;
 import javafx.application.Application;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -41,16 +44,16 @@ public class Main extends Application {
 
 	private boolean platformIsAndroid = true;
 	private TextField tfMysqlHost, tfMysqlPort, tfusername, tfDatabase, tfCondorLicense, tfIosBackupDirectory,
-            tfActivationCode, tfPhoneNumber;
+            tfCommand, tfPhoneNumber;
 	private PasswordField pf;
 	private VBox settingsBox, osSelectionBox, directoryBox;
 	private HBox continueBox;
-	private Button continueFromDatabaseSettingsButton, continueFromOSSelectionButton;
+	private Button continueFromDatabaseSettingsButton, continueFromOSSelectionButton, sendCommandButton;
 	private BorderPane root;
 	private Stage primaryStage;
 	private Button backToOSSelection;
     private ProcessHandler dbProcess;
-    private static Logger log = LogManager.getLogger();
+    private static Logger log = LogManager.getLogger("condor-whatsapp-main");
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -61,7 +64,7 @@ public class Main extends Application {
         tfCondorLicense = new TextField();
         tfPhoneNumber = new TextField();
         tfIosBackupDirectory = new TextField();
-        tfActivationCode = new TextField();
+        tfCommand = new TextField();
         pf = new PasswordField();
         log.trace("Initializing Main");
 	    try {
@@ -69,7 +72,7 @@ public class Main extends Application {
 			root = new BorderPane();
 
 			// Prefill via Textfile
-            DynamicConfig dc = DynamicConfig.create();
+            DynamicConfig dc = DynamicConfig.create("config/dynamic_config_ph.txt");
             tfMysqlPort.setText(dc.getMysqlPort());
             tfMysqlHost.setText(dc.getMysqlHost());
             tfusername.setText(dc.getUsername());
@@ -100,29 +103,8 @@ public class Main extends Application {
 
             EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
                 public void handle(InputEvent event) {
-                     {
-                        DynamicConfig dc = DynamicConfig.createEmpty("config/dynConf.txt");
-                        dc.setCondor_license(tfCondorLicense.getText());
-                        dc.setDatabase(tfDatabase.getText());
-                        dc.setIosBackupDirectory(tfIosBackupDirectory.getText());
-                        dc.setMysqlPort(tfMysqlPort.getText());
-                        dc.setPassword(pf.getText());
-                        dc.setUsername(tfusername.getText());
-                        dc.setPlatformIsAndroid(platformIsAndroid);
-                        dc.setPhoneNumber(tfPhoneNumber.getText());
-                        dc.close();
-                        dbProcess = new ProcessHandler(dc, DefaultConfig.create());
-                        dbProcess.messageProperty().addListener(new ChangeListener<String>() {
-                            @Override
-                            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                            }
-                        });
-                        Thread th = new Thread(dbProcess);
-                        th.start();
-                        if(dc.isPlatformIsAndroid())
-                        {
-                            androidScene(primaryStage);
-                        }
+                    {
+                         progressScene(primaryStage);
                     }
                 }
             };
@@ -149,51 +131,92 @@ public class Main extends Application {
 
 	}
 
-	public void androidScene(Stage primaryStage)
+	private void progressScene(Stage primaryStage)
     {
         BorderPane root = new BorderPane();
 
-        VBox activationCodeVbox = new VBox();
-        Label labelActivationCode = new Label("Activation Code (With '-'):");
-        labelActivationCode.setTextFill(Color.WHITE);
-        activationCodeVbox.getChildren().add(labelActivationCode);
-        activationCodeVbox.getChildren().add(tfActivationCode);
+        VBox contentBox = new VBox();
+        Label title = new Label("Progress");
+        title.setTextFill(Color.WHITE);
+        contentBox.getChildren().add(title);
+        TextArea ta = new TextArea();
+        ta.setEditable(false);
+        contentBox.getChildren().add(ta);
 
-        VBox continueBox = new VBox();
-        Button continueButton = new Button("Ok");
+        DynamicConfig dc = DynamicConfig.createEmpty("config/dynConf.txt");
+        dc.setCondor_license(tfCondorLicense.getText());
+        dc.setDatabase(tfDatabase.getText());
+        dc.setIosBackupDirectory(tfIosBackupDirectory.getText());
+        dc.setMysqlPort(tfMysqlPort.getText());
+        dc.setPassword(pf.getText());
+        dc.setUsername(tfusername.getText());
+        dc.setPlatformIsAndroid(platformIsAndroid);
+        dc.setPhoneNumber(tfPhoneNumber.getText());
+        dc.close();
+        dbProcess = new ProcessHandler(dc, DefaultConfig.create());
+        dbProcess.messageProperty().addListener((observable, oldValue, newValue) -> {
+            log.trace(newValue);
+            StringBuilder sb = new StringBuilder(newValue);
+            sb.append("\r\n");
+            sb.append(ta.getText());
+            ta.setText(sb.toString());
+            switch(newValue)
+            {
+                case "Condor complete":
+                    openFiles();
+                    dbProcess.cancel();
+                    break;
+                case "Requesting User Input":
+                    tfCommand.setEditable(true);
+                    sendCommandButton.setVisible(true);
+                    break;
+                case "Successfully extracted keyfile and db":
+                    tfCommand.setVisible(false);
+                    sendCommandButton.setVisible(false);
+                    break;
+                default:
+                    break;
+            }
+        });
 
-        continueBox.getChildren().add(continueButton);
-        continueBox.setPadding(new Insets(20));
-        //continueBox.setStyle("-fx-background-color: black;");
-        continueBox.alignmentProperty().set(Pos.CENTER);
-        continueButton.setPrefWidth(200);
+        VBox inputBox = new VBox();
+        Label inputLabel = new Label("Enter the command");
+        inputLabel.setTextFill(Color.WHITE);
+        inputBox.getChildren().add(inputLabel);
+        tfCommand.setEditable(false);
+        inputBox.getChildren().add(tfCommand);
+        sendCommandButton = new Button("Send Command");
+        sendCommandButton.setVisible(false);
+        sendCommandButton.addEventHandler(MouseEvent.MOUSE_CLICKED, (EventHandler<InputEvent>) event -> {
+            dbProcess.passCommand(tfCommand.getText());
+        });
+        inputBox.getChildren().add(sendCommandButton);
 
-        VBox settingsBox = new VBox();
-        settingsBox.setPadding(new Insets(10));
-        settingsBox.setSpacing(5);
-        settingsBox.getChildren().add(activationCodeVbox);
-        //settingsBox.getChildren().add(continueButton);
+        root.setCenter(contentBox);
+        root.setBottom(inputBox);
 
-
-        root.setCenter(settingsBox);
-        root.setBottom(continueBox);
-
-
-
-        Scene scene = new Scene(root,400,450);
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
-        primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
 
+        primaryStage.setTitle("COIN 2019 - WhatsApp Chats Extractor v.1");
         primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
-
-        //stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
-
         primaryStage.setScene(scene);
-
         primaryStage.show();
+        primaryStage.sizeToScene();
+
+        Thread th = new Thread(dbProcess);
+        th.start();
     }
 
+    private void openFiles() {
+        DefaultConfig df = DefaultConfig.create();
 
+        try {
+            Desktop.getDesktop().open(new File(df.getStandard_export_actors()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
             launch(args);
@@ -321,7 +344,6 @@ public class Main extends Application {
 		Label labelPassword = new Label("Password:");
 		labelPassword.setTextFill(Color.WHITE);
 		labelPassword.setTooltip(new Tooltip("--- here advise/help/information---"));
-		pf = new PasswordField();
 		pf.setTooltip(new Tooltip("--- here advise/help/information---"));
 		passwordBox.getChildren().add(labelPassword);
 		passwordBox.getChildren().add(pf);

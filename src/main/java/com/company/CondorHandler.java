@@ -22,6 +22,7 @@ public class CondorHandler {
         reportProgress.passMessage("Connected to Database");
 
         IDataset iDataset = condor.setOrCreateDataset(datasetname);
+        reportProgress.passMessage("Importing csv Files. This may take some time");
         condor.importCSV(actorCsv, linkCsv, iDataset, ";");
 
         reportProgress.passMessage("Import complete");
@@ -75,6 +76,7 @@ public class CondorHandler {
         new CondorHandler().connectToCondor
                 (licenseKey,host, port, username, password, database, linkCsv, actorCsv, linkExport, actorExport, reportProgress);
         reportProgress.passMessage("Condor complete");
+        reportProgress.cancel();
         return;
     }
 }

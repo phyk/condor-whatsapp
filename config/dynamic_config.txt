@@ -5,7 +5,7 @@ mysqlHost=localhost
 username=root
 password=
 database=condorTemp
-condor_license=
+condorLicense=
 # either 'android' or 'ios'
 platform=
 iosBackupDirectory=

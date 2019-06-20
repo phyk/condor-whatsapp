@@ -1,5 +1,8 @@
 package com.company;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import shared.SyncPipe;
 
 import java.io.*;
@@ -7,16 +10,27 @@ import java.util.Scanner;
 
 public class AndroidWhatsdumpAdapter implements Runnable{
 
-    private OutputStream err;
-    private OutputStream progress;
+    private static Logger log = LogManager.getLogger("condor-whatsapp-main");
+    private OutputStream err = new OutputStreamLogger(true);
+    private OutputStream progress = new OutputStreamLogger(false);
     private PrintWriter commandInput;
     private Process process;
-    private boolean requestInput;
 
-    public AndroidWhatsdumpAdapter(OutputStream errors, OutputStream progress)
+    public SimpleBooleanProperty requestInputProperty() {
+        return requestInput;
+    }
+
+    public SimpleBooleanProperty isDoneProperty() {
+        return isDone;
+    }
+
+    private SimpleBooleanProperty requestInput = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty isDone = new SimpleBooleanProperty(false);
+    private String phoneNumber;
+
+    public AndroidWhatsdumpAdapter(String phoneNumber)
     {
-        this.err = errors;
-        this.progress = progress;
+        this.phoneNumber = phoneNumber;
     }
 
 
@@ -24,7 +38,6 @@ public class AndroidWhatsdumpAdapter implements Runnable{
 //        String[] command = {"cmd", "/c", "start", "\"Whatsdump\"", new File("dist/whatsdump/whatsdump.exe").getAbsolutePath(),
 //                "--wa-phone +4915753363836", "--wa-verify sms" };
         try {
-            Scanner sc = new Scanner(System.in);
 
             this.process = Runtime.getRuntime().exec(new String[]{"cmd"});
             new Thread(new SyncPipe(this.process.getErrorStream(), err)).start();
@@ -34,19 +47,20 @@ public class AndroidWhatsdumpAdapter implements Runnable{
             runCommand("set ANDROID_HOME=" + new File("android-sdk").getAbsolutePath());
             runCommand("set JAVA_HOME=" + new File("jdk").getAbsolutePath());
             runCommand(new File("dist/whatsdump/whatsdump.exe").getAbsolutePath() +
-                    " --wa-phone +4915753363836" + " --wa-verify sms");
-            //runCommand("0");
+                    " --wa-phone "+phoneNumber + " --wa-verify sms");
+            runCommand("0");
 
             synchronized (this)
             {
-                this.requestInput = true;
+                this.requestInput.set(true);
             }
             int returnCode = this.process.waitFor();
+            this.isDone.set(true);
             progress.write(returnCode);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         } finally {
             this.commandInput.close();
             try {
@@ -64,20 +78,47 @@ public class AndroidWhatsdumpAdapter implements Runnable{
         this.commandInput.println(command);
         this.commandInput.flush();
     }
-    public boolean isRequestInput()
-    {
-        return requestInput;
-    }
 
     public static void main (String args[]) throws InterruptedException {
-        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(System.err, System.out);
+        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter("+4915753363836");
         Thread sub = new Thread(awa);
         sub.start();
-        while(!awa.isRequestInput())
+        while(!awa.requestInputProperty().getValue())
         {
             Thread.sleep(500);
         }
         awa.runCommand("0");
         awa.runCommand("n");
+    }
+
+    private class OutputStreamLogger extends OutputStream
+    {
+        private String mem;
+        private boolean isErrorStream;
+
+        @Override
+        public void write (int b) {
+            byte[] bytes = new byte[1];
+            bytes[0] = (byte) (b & 0xff);
+            mem = mem + new String(bytes);
+
+            if (mem.endsWith ("\n")) {
+                mem = mem.substring (0, mem.length () - 1);
+                flush ();
+            }
+        }
+        public void flush () {
+            if(isErrorStream)
+            {
+                log.error(mem);
+            }
+            else
+                log.trace(mem);
+            mem = "";
+        }
+        private OutputStreamLogger(boolean isErrorStream)
+        {
+            this.isErrorStream = isErrorStream;
+        }
     }
 }

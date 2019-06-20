@@ -1,5 +1,7 @@
 package com.company;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -17,6 +19,8 @@ import java.util.Date;
 
 public class WhatsappDBToCsv {
 
+    private static Logger log = LogManager.getLogger("condor-whatsapp-main");
+
     private Connection conn;
 
     private WhatsappDBToCsv(String databaseLocationPath)
@@ -24,7 +28,7 @@ public class WhatsappDBToCsv {
         try {
             this.conn = openDbConnection(databaseLocationPath);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
     }
 
@@ -70,7 +74,7 @@ public class WhatsappDBToCsv {
         try {
             tbl = createTableWithInfo(sqlIos);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
 
         String enddate = null;
@@ -79,7 +83,7 @@ public class WhatsappDBToCsv {
             enddate = getLatestDateIos();
             startdate = getFirstDateIos();
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
 
         int length = tbl.column(0).size();
@@ -96,7 +100,7 @@ public class WhatsappDBToCsv {
             try {
                 return convertStringToDate(s);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error(e.getStackTrace());
             }
             return "";
         }, stc);
@@ -111,7 +115,7 @@ public class WhatsappDBToCsv {
         try {
             sha = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
 
         HashSet<String> actors = new HashSet<>();
@@ -209,7 +213,7 @@ public class WhatsappDBToCsv {
         try {
             tbl = createTableWithInfo(sqlAndroid);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
 
         String enddate = getLatestDateAndroid();
@@ -236,7 +240,7 @@ public class WhatsappDBToCsv {
             try {
                 sha = MessageDigest.getInstance("SHA-256");
             } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
+                log.error(e.getStackTrace());
         }
 
         HashSet<String> actors = new HashSet<>();
@@ -377,7 +381,7 @@ public class WhatsappDBToCsv {
             rs.close();
             stm.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
         return enddate;
     }
@@ -394,7 +398,7 @@ public class WhatsappDBToCsv {
             enddate = convertSecondsToDate(endtime);
             return enddate;
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
         return null;
     }
