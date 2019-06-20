@@ -1,4 +1,5 @@
 package application;
+
 import java.io.File;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -18,17 +19,29 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import com.company.ProcessHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import shared.DefaultConfig;
+import shared.DynamicConfig;
 
 
 public class Main extends Application {
 
 	private boolean platformIsAndroid = true;
-	private TextField tfMysqlHost, tfMysqlPort, tfusername, tfDatabase, tfCondorLicense;
+	private TextField tfMysqlHost, tfMysqlPort, tfusername, tfDatabase, tfCondorLicense, tfIosBackupDirectory,
+            tfActivationCode, tfPhoneNumber;
 	private PasswordField pf;
 	private VBox settingsBox, osSelectionBox, directoryBox;
 	private HBox continueBox;
@@ -36,19 +49,42 @@ public class Main extends Application {
 	private BorderPane root;
 	private Stage primaryStage;
 	private Button backToOSSelection;
-	private TextField phone_number = new TextField("+49");
-
-
+    private ProcessHandler dbProcess;
+    private static Logger log = LogManager.getLogger();
 
 	@Override
 	public void start(Stage primaryStage) {
-		try {
+        tfMysqlHost = new TextField();
+        tfMysqlPort = new TextField();
+        tfusername = new TextField();
+        tfDatabase = new TextField();
+        tfCondorLicense = new TextField();
+        tfPhoneNumber = new TextField();
+        tfIosBackupDirectory = new TextField();
+        tfActivationCode = new TextField();
+        pf = new PasswordField();
+        log.trace("Initializing Main");
+	    try {
 			this.primaryStage = primaryStage;
 			root = new BorderPane();
+
+			// Prefill via Textfile
+            DynamicConfig dc = DynamicConfig.create();
+            tfMysqlPort.setText(dc.getMysqlPort());
+            tfMysqlHost.setText(dc.getMysqlHost());
+            tfusername.setText(dc.getUsername());
+            pf.setText(dc.getPassword());
+            tfDatabase.setText(dc.getDatabase());
+            tfCondorLicense.setText(dc.getCondor_license());
+            tfPhoneNumber.setText(dc.getPhoneNumber());
+            tfIosBackupDirectory.setText(dc.getIosBackupDirectory());
+
+            log.trace("Initialized Textfields");
 
 			initOSSelectionBox();
 			initSettingsBox();
 
+			log.trace("Run through init Methods");
 
 			continueBox = new HBox();
 			continueBox.setPadding(new Insets(10));
@@ -58,12 +94,51 @@ public class Main extends Application {
 
 			root.setCenter(osSelectionBox);
 			root.setBottom(continueBox);
+	        
+			VBox continueBox = new VBox();
+			Button continueButton = new Button("Continue");
+
+            EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
+                public void handle(InputEvent event) {
+                     {
+                        DynamicConfig dc = DynamicConfig.createEmpty("config/dynConf.txt");
+                        dc.setCondor_license(tfCondorLicense.getText());
+                        dc.setDatabase(tfDatabase.getText());
+                        dc.setIosBackupDirectory(tfIosBackupDirectory.getText());
+                        dc.setMysqlPort(tfMysqlPort.getText());
+                        dc.setPassword(pf.getText());
+                        dc.setUsername(tfusername.getText());
+                        dc.setPlatformIsAndroid(platformIsAndroid);
+                        dc.setPhoneNumber(tfPhoneNumber.getText());
+                        dc.close();
+                        dbProcess = new ProcessHandler(dc, DefaultConfig.create());
+                        dbProcess.messageProperty().addListener(new ChangeListener<String>() {
+                            @Override
+                            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            }
+                        });
+                        Thread th = new Thread(dbProcess);
+                        th.start();
+                        if(dc.isPlatformIsAndroid())
+                        {
+                            androidScene(primaryStage);
+                        }
+                    }
+                }
+            };
+
+			continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
+			continueBox.getChildren().add(continueButton);
+			continueBox.setPadding(new Insets(20));
+			//continueBox.setStyle("-fx-background-color: black;");
+			continueBox.alignmentProperty().set(Pos.CENTER);
+			continueButton.setPrefWidth(200);
 
 			Scene scene = new Scene(root);
-			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
 
 			primaryStage.setTitle("COIN 2019 - WhatsApp Chats Extractor v.1");
-			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("uni2.png")));
+			primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			primaryStage.sizeToScene();
@@ -74,10 +149,56 @@ public class Main extends Application {
 
 	}
 
+	public void androidScene(Stage primaryStage)
+    {
+        BorderPane root = new BorderPane();
 
-	public static void main(String[] args) {
-		launch(args);
-	}
+        VBox activationCodeVbox = new VBox();
+        Label labelActivationCode = new Label("Activation Code (With '-'):");
+        labelActivationCode.setTextFill(Color.WHITE);
+        activationCodeVbox.getChildren().add(labelActivationCode);
+        activationCodeVbox.getChildren().add(tfActivationCode);
+
+        VBox continueBox = new VBox();
+        Button continueButton = new Button("Ok");
+
+        continueBox.getChildren().add(continueButton);
+        continueBox.setPadding(new Insets(20));
+        //continueBox.setStyle("-fx-background-color: black;");
+        continueBox.alignmentProperty().set(Pos.CENTER);
+        continueButton.setPrefWidth(200);
+
+        VBox settingsBox = new VBox();
+        settingsBox.setPadding(new Insets(10));
+        settingsBox.setSpacing(5);
+        settingsBox.getChildren().add(activationCodeVbox);
+        //settingsBox.getChildren().add(continueButton);
+
+
+        root.setCenter(settingsBox);
+        root.setBottom(continueBox);
+
+
+
+        Scene scene = new Scene(root,400,450);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
+        primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
+
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
+
+        //stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
+
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
+
+
+    public static void main(String[] args) {
+            launch(args);
+        }
+
 
 	private void initOSSelectionBox() {
 		final ToggleGroup group = new ToggleGroup();
@@ -99,13 +220,13 @@ public class Main extends Application {
 		HBox toggleBox = new HBox();
 
 		ImageView ivIOS = new ImageView();
-		ivIOS.setImage(new Image(getClass().getResourceAsStream("apple2.png")));
+		ivIOS.setImage(new Image(getClass().getClassLoader().getResourceAsStream("img/apple2.png")));
 		ivIOS.setOnMouseClicked(e->{
 			rbIOS.setSelected(true);
 		});
 
 		ImageView ivAndroid = new ImageView();
-		ivAndroid.setImage(new Image(getClass().getResourceAsStream("android2.png")));
+		ivAndroid.setImage(new Image(getClass().getClassLoader().getResourceAsStream("img/android2.png")));
 		ivAndroid.setOnMouseClicked(e->{
 			rbAndroid.setSelected(true);
 		});
@@ -129,6 +250,28 @@ public class Main extends Application {
 		toggleBox.prefHeightProperty().bind(osSelectionBox.heightProperty().subtract(labelSelection.getHeight()));
 		toggleBox.setSpacing(10);
 
+        continueFromOSSelectionButton = new Button("Continue ->");
+        continueFromOSSelectionButton.setPrefWidth(200);
+        continueFromOSSelectionButton.setOnAction( e -> {
+
+            //setNextScene
+            platformIsAndroid = rbAndroid.isSelected();
+            log.trace("Platform is Android " +  platformIsAndroid);
+
+            settingsBox.getChildren().remove(directoryBox);
+            if(!platformIsAndroid) settingsBox.getChildren().add(directoryBox);
+
+            root.getChildren().remove(osSelectionBox);
+            root.setCenter(settingsBox);
+            continueBox.getChildren().remove(continueFromOSSelectionButton);
+
+            continueBox.getChildren().add(backToOSSelection);
+            continueBox.getChildren().add(continueFromDatabaseSettingsButton);
+
+            primaryStage.sizeToScene();
+
+        });
+
 		osSelectionBox.alignmentProperty().set(Pos.TOP_CENTER);
 		osSelectionBox.getChildren().add(labelSelection);
 		osSelectionBox.getChildren().add(toggleBox);
@@ -147,26 +290,6 @@ public class Main extends Application {
 		});
 		backToOSSelection.setPrefWidth(100);
 		backToOSSelection.alignmentProperty().set(Pos.CENTER_LEFT);
-		continueFromOSSelectionButton = new Button("Continue ->");
-		continueFromOSSelectionButton.setPrefWidth(200);
-		continueFromOSSelectionButton.setOnAction( e -> {
-
-			//setNextScene
-			platformIsAndroid = rbAndroid.isSelected();
-			System.out.println("android: "+platformIsAndroid);
-
-			settingsBox.getChildren().remove(directoryBox);
-			if(!platformIsAndroid) settingsBox.getChildren().add(directoryBox);
-
-			root.getChildren().remove(osSelectionBox);
-			root.setCenter(settingsBox);
-			continueBox.getChildren().remove(continueFromOSSelectionButton);
-
-			continueBox.getChildren().add(backToOSSelection);
-			continueBox.getChildren().add(continueFromDatabaseSettingsButton);
-			primaryStage.sizeToScene();
-
-		});
 	}
 
 	private void initSettingsBox() {
@@ -175,7 +298,6 @@ public class Main extends Application {
 		labelHost.setTextFill(Color.WHITE);
 		labelHost.setTooltip(new Tooltip("--- here advise/help/information---"));
 		hostBox.getChildren().add(labelHost);
-		tfMysqlHost = new TextField("localhost");
 		tfMysqlHost.setTooltip(new Tooltip("--- here advise/help/information---"));
 		hostBox.getChildren().add(tfMysqlHost);
 
@@ -184,7 +306,6 @@ public class Main extends Application {
 		labelPort.setTextFill(Color.WHITE);
 		labelPort.setTooltip(new Tooltip("--- here advise/help/information---"));
 		portBox.getChildren().add(labelPort);
-		tfMysqlPort = new TextField("3306");
 		tfMysqlPort.setTooltip(new Tooltip("--- here advise/help/information---"));
 		portBox.getChildren().add(tfMysqlPort);
 
@@ -193,7 +314,6 @@ public class Main extends Application {
 		labelUser.setTextFill(Color.WHITE);
 		labelUser.setTooltip(new Tooltip("--- here advise/help/information---"));
 		usernameBox.getChildren().add(labelUser);
-		tfusername = new TextField("root");
 		tfusername.setTooltip(new Tooltip("--- here advise/help/information---"));
 		usernameBox.getChildren().add(tfusername);
 
@@ -210,16 +330,15 @@ public class Main extends Application {
 		Label labelPhoneNumber = new Label("Phone Number:");
 		labelPhoneNumber.setTooltip(new Tooltip("--- here advise/help/information---"));
 		labelPhoneNumber.setTextFill(Color.WHITE);
-		phone_number.setTooltip(new Tooltip("--- here advise/help/information---"));
+		tfPhoneNumber.setTooltip(new Tooltip("--- here advise/help/information---"));
 		phoneNumberBox.getChildren().add(labelPhoneNumber);
-		phoneNumberBox.getChildren().add(phone_number);
+		phoneNumberBox.getChildren().add(tfPhoneNumber);
 
 		VBox databaseBox = new VBox();
 		Label labelDatabase = new Label("Choose non existing database name:");
 		labelDatabase.setTextFill(Color.WHITE);
 		labelDatabase.setTooltip(new Tooltip("--- here advise/help/information---"));
 		databaseBox.getChildren().add(labelDatabase);
-		tfDatabase = new TextField("condor_WhatsApp_temp");
 		tfDatabase.setTooltip(new Tooltip("--- here advise/help/information---"));
 		databaseBox.getChildren().add(tfDatabase);
 
@@ -228,7 +347,6 @@ public class Main extends Application {
 		labelLicence.setTooltip(new Tooltip("--- here advise/help/information---"));
 		labelLicence.setTextFill(Color.WHITE);
 		condorLicenceBox.getChildren().add(labelLicence);
-		tfCondorLicense = new TextField();
 		tfCondorLicense.setTooltip(new Tooltip("--- here advise/help/information---"));
 		condorLicenceBox.getChildren().add(tfCondorLicense);
 
@@ -249,7 +367,9 @@ public class Main extends Application {
 		continueFromDatabaseSettingsButton.alignmentProperty().set(Pos.CENTER_RIGHT);
 
 		continueFromDatabaseSettingsButton.setOnAction( e -> {
-			if(tfMysqlHost.getText().isEmpty() || tfMysqlPort.getText().isEmpty() || tfusername.getText().isEmpty() || tfDatabase.getText().isEmpty() || tfCondorLicense.getText().isEmpty() || pf.getText().isEmpty() || phone_number.getText().isEmpty()) {
+			if(tfMysqlHost.getText().isEmpty() || tfMysqlPort.getText().isEmpty() || tfusername.getText().isEmpty() ||
+                    tfDatabase.getText().isEmpty() || tfCondorLicense.getText().isEmpty() || pf.getText().isEmpty() ||
+                    tfPhoneNumber.getText().isEmpty()) {
 				Alert alert = new Alert(AlertType.ERROR, "Please fill in all required fields", ButtonType.OK);
 				alert.showAndWait();
 			}
@@ -258,13 +378,12 @@ public class Main extends Application {
 
 		
 		directoryBox = new VBox();
-		TextField dir = new TextField();
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		Button openButton = new Button("Navigate");
 		openButton.setPrefWidth(100);
 		openButton.setOnAction( e-> {
 			File file = directoryChooser.showDialog(primaryStage);
-			if (file != null) dir.setText(file.getAbsolutePath());
+			if (file != null) tfIosBackupDirectory.setText(file.getAbsolutePath());
 		});
 		Label labelDir = new Label("Chose a place for your IOS backup:");
 		labelDir.setTextFill(Color.WHITE);
@@ -272,8 +391,8 @@ public class Main extends Application {
 		HBox dirBox = new HBox();
 		dirBox.getChildren().add(openButton);
 		dirBox.setSpacing(5);
-		dir.prefWidthProperty().bind(dirBox.widthProperty().subtract(openButton.getPrefWidth()));
-		dirBox.getChildren().add(dir);
+		tfIosBackupDirectory.prefWidthProperty().bind(dirBox.widthProperty().subtract(openButton.getPrefWidth()));
+		dirBox.getChildren().add(tfIosBackupDirectory);
 		directoryBox.getChildren().add(dirBox);
 
 	}

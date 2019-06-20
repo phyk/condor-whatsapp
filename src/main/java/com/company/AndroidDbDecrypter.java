@@ -70,7 +70,8 @@ public class AndroidDbDecrypter {
 		byte[] IV = new byte[16];
 		System.arraycopy(C12Data, 51, IV, 0, 16);
 
-		if (!new String(T1, 0, T1.length, StandardCharsets.US_ASCII).equals(new String(T2, 0, T2.length, "ASCII")))
+		if (!new String(T1, 0, T1.length, StandardCharsets.US_ASCII).equals(
+				new String(T2, 0, T2.length, StandardCharsets.US_ASCII)))
 			return ("Key file mismatch or crypt12 file is corrupt.");
 
 		int InputLength = WdbIn.available();

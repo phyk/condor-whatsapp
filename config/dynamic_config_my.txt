@@ -2,11 +2,11 @@
 #
 mysql_port=3306
 username=root
-password=
+password=OQhpmmqbKBDvvk6k8EP3
 database=condorTemp
-condor_license=
+condor_license=9oi160m0dk8oafa2kkcpgtlbqg
 # either 'android' or 'ios'
-platform=
-ios_backup_directory=
+platform=android
+ios_backup_directory=H:/ed35f99622e43d4c5bfe3528ce74cd0f5e28731c
 # format +49<number without leading 0>
 phone_number=

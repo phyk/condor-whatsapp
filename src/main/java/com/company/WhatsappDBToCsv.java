@@ -10,6 +10,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
@@ -40,14 +41,159 @@ public class WhatsappDBToCsv {
 
         if(message.equals("Decryption of crypt12 file was successful.")) {
             WhatsappDBToCsv wcs = WhatsappDBToCsv.create("data/msgstore.db");
-            wcs.createCSVExport("data/links.csv","data/actors.csv");
+            wcs.createCSVExportAndroid("data/links.csv","data/actors.csv");
             wcs.closeDbConnection();
             System.exit(0);
         }
     }
 
-    public void createCSVExport(String pathToLinks, String pathToActors) throws IOException {
-        String sql = "SELECT main.messages._id AS linkid," +
+    public void createCSVExportIos(String pathToLinks, String pathToActors) throws IOException {
+        String sqlIos = "SELECT\n" +
+                "ZWAMESSAGE.ZFROMJID as sender," +
+                "ZWAMESSAGE.ZTOJID as receiver,\n" +
+                "ZWAMESSAGE.ZTEXT as content,\n" +
+                "ZWAMESSAGE.ZISFROMME as myKey,\n" +
+                "datetime(main.ZWAMESSAGE.ZMESSAGEDATE + strftime('%s', '2001-01-01 00:00:00'),+\n" +
+                "'unixepoch', 'localtime') as timestamp,\n" +
+                "ZWAGROUPMEMBER.ZMEMBERJID as idGroup,\n" +
+                "groups.ZMEMBERJID as idRem\n" +
+                "FROM ZWAMESSAGE\n" +
+                "LEFT JOIN ZWACHATSESSION\n" +
+                "ON ZWAMESSAGE.ZCHATSESSION = ZWACHATSESSION.Z_PK\n" +
+                "LEFT JOIN ZWAGROUPMEMBER\n" +
+                "ON ZWACHATSESSION.Z_PK = ZWAGROUPMEMBER.ZCHATSESSION\n" +
+                "LEFT JOIN ZWAGROUPMEMBER AS groups\n" +
+                "ON ZWAMESSAGE.ZGROUPMEMBER = groups.Z_PK\n" +
+                "WHERE NOT(ZWAMESSAGE.ZTEXT = 0) ";
+
+        Table tbl = null;
+        try {
+            tbl = createTableWithInfo(sqlIos);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        String enddate = null;
+        String startdate = null;
+        try {
+            enddate = getLatestDateIos();
+            startdate = getFirstDateIos();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        int length = tbl.column(0).size();
+        String[] values = new String[length];
+        Arrays.fill(values, enddate);
+        StringColumn etc = StringColumn.create("Endtime", values);
+
+        StringColumn id = StringColumn.create("uuid", length);
+
+        tbl.column("myKey").asStringColumn().mapInto(s -> UUID.randomUUID() + "", id);
+
+        StringColumn stc = StringColumn.create("Starttime",length);
+        tbl.column("timestamp").asStringColumn().mapInto(s -> {
+            try {
+                return convertStringToDate(s);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }, stc);
+
+        StringColumn content = StringColumn.create("content", length);
+        tbl.column("content").asStringColumn().mapInto(s -> s.replaceAll("(\\r)",".")
+                .replaceAll("\\n"," ").replaceAll(";",",")
+                .replaceAll("\r", ".").replaceAll("\n", " "), content);
+
+
+        MessageDigest sha = null;
+        try {
+            sha = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        HashSet<String> actors = new HashSet<>();
+        StringColumn sIdc = StringColumn.create("SourceUuid");
+        StringColumn tIdc = StringColumn.create("TargetUuid");
+        for (Row row: tbl)
+        {
+            boolean fromMe = row.getInt("myKey") == 1;
+            String sender = row.getString("sender");
+            String receiver = row.getString("receiver");
+            String idGroup = row.getString("idGroup");
+            String idRem = row.getString("idRem");
+            String idMyself = "0";
+
+            if(!idGroup.equals(""))
+                idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
+
+            if(sender.equals(""))
+                sender = idMyself;
+
+            if(receiver.equals(""))
+                receiver = idMyself;
+            else
+                receiver = toHexString(sha.digest(receiver.substring(0,13).getBytes()));
+
+            if(!idRem.equals(""))
+                idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
+
+            // Group Logic
+            if(sender.endsWith("@g.us"))
+            {
+                if(idRem.equals(""))
+                    idRem = "PROBLEM";
+                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sIdc.append(idRem);
+                tIdc.append(idGroup);
+                actors.add(idRem);
+                actors.add(idGroup);
+            }else
+            // Chat Logic
+            if(sender.endsWith("@s.whatsapp.net") || sender.equals(idMyself))
+            {
+                if(!sender.equals(idMyself))
+                    sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sIdc.append(sender);
+                tIdc.append(receiver);
+                actors.add(sender);
+                actors.add(receiver);
+            }
+        }
+
+        Table copy = Table.create(id, content, sIdc, tIdc, tbl.column("timestamp"), etc);
+
+        CsvWriteOptions.Builder cwo = CsvWriteOptions.builder(pathToLinks);
+        cwo.header(true);
+        cwo.separator(';');
+
+        CsvWriter cw = new CsvWriter();
+        cw.write(copy, cwo.build());
+
+
+        StringColumn asc = StringColumn.create("id", new ArrayList<>(actors));
+        StringColumn asc2 = StringColumn.create("uuid", new ArrayList<>(actors));
+        StringColumn asc3 = StringColumn.create("name", new ArrayList<>(actors));
+
+        length = asc.size();
+        values = new String[length];
+        Arrays.fill(values, startdate);
+        StringColumn stc2 = StringColumn.create("starttime", values);
+        values = new String[length];
+        Arrays.fill(values, enddate);
+        StringColumn etc2 = StringColumn.create("endtime", values);
+
+        Table actorTable = Table.create(asc, asc2, asc3, stc2, etc2);
+        cwo = CsvWriteOptions.builder(pathToActors);
+        cwo.header(true);
+        cwo.separator(';');
+        cw.write(actorTable, cwo.build());
+    }
+
+    public void createCSVExportAndroid(String pathToLinks, String pathToActors) throws IOException {
+        String sqlAndroid = "SELECT main.messages._id AS linkid," +
                 "main.messages.data AS content, " +
                 "main.messages.key_remote_jid as idRef, " +
                 "main.messages.key_from_me as myKey, " +
@@ -59,23 +205,15 @@ public class WhatsappDBToCsv {
                 "WHERE (NOT (idRem = idGroup AND myKey = 0)) AND " +
                 "(NOT (mykey = 1 AND idRef LIKE '@g.us' AND idGroup = '')) AND NOT idRef LIKE 'status@broadcast'";
 
-        /*
-         * SQL Fuer iOS
-         * KeyFromMe = ! ZMessageFromMe
-         * content =
-         * group_participants = ZMemberJid
-         * timestamp = ZMessageDate
-         *
-         */
         Table tbl = null;
         try {
-            tbl = createTableWithInfo(sql);
+            tbl = createTableWithInfo(sqlAndroid);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        String enddate = getLatestDate();
-        String startdate = getFirstDate();
+        String enddate = getLatestDateAndroid();
+        String startdate = getFirstDateAndroid();
         int length = tbl.column(0).size();
         String[] values = new String[length];
         Arrays.fill(values, enddate);
@@ -89,7 +227,7 @@ public class WhatsappDBToCsv {
 
         StringColumn id = StringColumn.create("uuid", length);
 
-        tbl.column("linkid").asStringColumn().mapInto(s -> UUID.randomUUID() + "", id);
+        tbl.column("linkid").asStringColumn().mapInto(s -> (UUID.randomUUID() + "").replaceAll("-",""), id);
 
         StringColumn content = StringColumn.create("content", length);
         tbl.column("content").asStringColumn().mapInto(s -> s.replace("\r\n",". ").replace(";","").replace("\r",""), content);
@@ -197,7 +335,7 @@ public class WhatsappDBToCsv {
         return hexString.toString();
     }
 
-    private String getLatestDate()
+    private String getLatestDateAndroid()
     {
         String selectLatestTimestamp =
                 "SELECT main.messages.timestamp FROM main.messages " +
@@ -210,6 +348,37 @@ public class WhatsappDBToCsv {
             enddate = convertSecondsToDate(System.currentTimeMillis());
         }
 
+        return enddate;
+    }
+
+    private String getLatestDateIos() throws ParseException {
+        String selectLatestTimestamp =
+                "SELECT datetime(main.ZWAMESSAGE.ZMESSAGEDATE + strftime('%s', '2001-01-01 00:00:00'),\n" +
+                        "       'unixepoch', 'localtime') as timestamp FROM main.ZWAMESSAGE " +
+                        "ORDER BY main.ZWAMESSAGE.ZMESSAGEDATE DESC LIMIT 1";
+        String columnLabel = "timestamp";
+
+        String enddate = executeSqlAndGetResultIos(selectLatestTimestamp, columnLabel);
+        if(enddate == null)
+        {
+            enddate = convertSecondsToDate(System.currentTimeMillis());
+        }
+
+        return convertStringToDate(enddate);
+    }
+
+    private String executeSqlAndGetResultIos(String sql, String columnLabel)
+    {
+        String enddate = null;
+        try(Statement stm = conn.createStatement()) {
+            ResultSet rs = stm.executeQuery(sql);
+
+            enddate = rs.getString(columnLabel);
+            rs.close();
+            stm.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return enddate;
     }
 
@@ -230,7 +399,7 @@ public class WhatsappDBToCsv {
         return null;
     }
 
-    private String getFirstDate() {
+    private String getFirstDateAndroid() {
         String selectLatestTimestamp =
                 "SELECT main.messages.timestamp FROM main.messages " +
                         "ORDER BY main.messages.timestamp ASC LIMIT 1";
@@ -245,10 +414,32 @@ public class WhatsappDBToCsv {
         return enddate;
     }
 
+    private String getFirstDateIos() throws ParseException {
+        String selectLatestTimestamp =
+                "SELECT datetime(main.ZWAMESSAGE.ZMESSAGEDATE + strftime('%s', '2001-01-01 00:00:00'),\n" +
+                        "       'unixepoch', 'localtime') as timestamp FROM main.ZWAMESSAGE " +
+                        "ORDER BY main.ZWAMESSAGE.ZMESSAGEDATE ASC LIMIT 1";
+        String columnLabel = "timestamp";
+
+        String enddate = executeSqlAndGetResultIos(selectLatestTimestamp, columnLabel);
+        if(enddate == null)
+        {
+            enddate = convertSecondsToDate(0);
+        }
+
+        return convertStringToDate(enddate);
+    }
+
     private String convertSecondsToDate(long time)
     {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         return format.format(new Date(time));
+    }
+
+    private String convertStringToDate(String time) throws ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        DateFormat input = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return format.format(input.parse(time));
     }
 
     private Connection openDbConnection(String pathToDb) throws SQLException {
