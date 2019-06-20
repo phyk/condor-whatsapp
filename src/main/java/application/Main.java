@@ -11,6 +11,8 @@ import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -34,14 +36,15 @@ import shared.DynamicConfig;
 
 public class Main extends Application {
 	
-    private TextField mysql_port = new TextField("3306");
-    private TextField username = new TextField("root");
+    private TextField mysql_port = new TextField("");
+    private TextField username = new TextField("");
     private TextField password = new PasswordField();
-    private TextField database = new TextField("condor_temp");
+    private TextField database = new TextField("");
     private TextField condor_license = new TextField("");
     private TextField phone_number = new TextField("");
     private RadioButton platformIsAndroid = new RadioButton("Android");
     private TextField ios_backup_directory = new TextField("");
+    private TextField activationCode = new TextField();
 
     private ProcessHandler dbProcess;
 	
@@ -49,6 +52,21 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+		    try{
+                DynamicConfig dc = DynamicConfig.create();
+                mysql_port.setText(dc.getMysql_port());
+                username.setText(dc.getUsername());
+                password.setText(dc.getPassword());
+                database.setText(dc.getDatabase());
+                condor_license.setText(dc.getCondor_license());
+                phone_number.setText(dc.getPhone_number());
+                ios_backup_directory.setText(dc.getIos_backup_directory());
+            }
+            catch(Exception e)
+            {
+
+            }
+
 			BorderPane root = new BorderPane();
 			
 			VBox portBox = new VBox();
@@ -89,7 +107,6 @@ public class Main extends Application {
 			condorLicenseBox.getChildren().add(condor_license);
 			
 			VBox directoryBox = new VBox();
-			TextField dir = new TextField();
 			
 			
 			FileChooser fileChooser = new FileChooser();
@@ -103,7 +120,7 @@ public class Main extends Application {
 	                        File file = fileChooser.showOpenDialog(primaryStage);
 	                        if (file != null) {
 	                            // put dir to textfield
-	                        	dir.setText(file.getAbsolutePath());
+                                ios_backup_directory.setText(file.getAbsolutePath());
 	                        }
 	                    }
 	                });
@@ -116,8 +133,8 @@ public class Main extends Application {
 	        HBox dirBox = new HBox();
 	        dirBox.getChildren().add(openButton);
 	        dirBox.setSpacing(5);
-	        dir.prefWidthProperty().bind(dirBox.widthProperty().subtract(openButton.getPrefWidth()));
-	        dirBox.getChildren().add(dir);
+            ios_backup_directory.prefWidthProperty().bind(dirBox.widthProperty().subtract(openButton.getPrefWidth()));
+	        dirBox.getChildren().add(ios_backup_directory);
 	        
 	        directoryBox.getChildren().add(dirBox);
 	        
@@ -138,7 +155,7 @@ public class Main extends Application {
 	        		directoryBox.setDisable(false);
 	        	}
 	        	if(newVal == false) {
-	        		dir.clear();
+                    ios_backup_directory.clear();
 	        		directoryBox.setDisable(true);
 	        	}
 	        });
@@ -173,8 +190,17 @@ public class Main extends Application {
                         dc.setPhone_number(phone_number.getText());
                         dc.close();
                         dbProcess = new ProcessHandler(dc, DefaultConfig.create());
+                        dbProcess.messageProperty().addListener(new ChangeListener<String>() {
+                            @Override
+                            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                            }
+                        });
                         Thread th = new Thread(dbProcess);
                         th.start();
+                        if(dc.isPlatformIsAndroid())
+                        {
+                            androidScene(primaryStage);
+                        }
                     }
                 }
             };
@@ -221,6 +247,72 @@ public class Main extends Application {
 		}
 	}
 
+	public void androidScene(Stage primaryStage)
+    {
+        BorderPane root = new BorderPane();
+
+        VBox activationCodeVbox = new VBox();
+        Label labelActivationCode = new Label("Activation Code (With '-'):");
+        labelActivationCode.setTextFill(Color.WHITE);
+        activationCodeVbox.getChildren().add(labelActivationCode);
+        activationCodeVbox.getChildren().add(activationCode);
+
+        VBox continueBox = new VBox();
+        Button continueButton = new Button("Ok");
+
+        EventHandler<InputEvent> handler = new EventHandler<InputEvent>() {
+            public void handle(InputEvent event) {
+                if(checkFieldsValid(mysql_port, username, password, database, condor_license, platformIsAndroid,
+                        ios_backup_directory, phone_number)) {
+                    DynamicConfig dc = DynamicConfig.createEmpty("config/dynConf.txt");
+                    dc.setCondor_license(condor_license.getText());
+                    dc.setDatabase(database.getText());
+                    dc.setIos_backup_directory(ios_backup_directory.getText());
+                    dc.setMysql_port(mysql_port.getText());
+                    dc.setPassword(password.getText());
+                    dc.setUsername(username.getText());
+                    dc.setPlatformIsAndroid(platformIsAndroid.isSelected());
+                    dc.setPhone_number(phone_number.getText());
+                    dc.close();
+                    dbProcess = new ProcessHandler(dc, DefaultConfig.create());
+                    Thread th = new Thread(dbProcess);
+                    th.start();
+                }
+            }
+        };
+
+        continueButton.addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
+        continueBox.getChildren().add(continueButton);
+        continueBox.setPadding(new Insets(20));
+        //continueBox.setStyle("-fx-background-color: black;");
+        continueBox.alignmentProperty().set(Pos.CENTER);
+        continueButton.setPrefWidth(200);
+
+        VBox settingsBox = new VBox();
+        settingsBox.setPadding(new Insets(10));
+        settingsBox.setSpacing(5);
+        settingsBox.getChildren().add(activationCodeVbox);
+        //settingsBox.getChildren().add(continueButton);
+
+
+        root.setCenter(settingsBox);
+        root.setBottom(continueBox);
+
+
+
+        Scene scene = new Scene(root,400,450);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());
+        primaryStage.setTitle("COIN 2019 - WhatsApp chats extractor v.1");
+
+        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("img/uni2.png")));
+
+        //stage.getIcons().add(new Image(<yourclassname>.class.getResourceAsStream("icon.png")));
+
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
     private boolean checkFieldsValid(TextField portBox, TextField usernameBox, TextField passwordBox, TextField databaseBox,
                                   TextField condorLicenceBox, RadioButton toggleBox, TextField directoryBox, TextField phoneNumberBox) {
 	    boolean everythingChecked = true;
@@ -251,18 +343,11 @@ public class Main extends Application {
         {
             everythingChecked = false;
         }
-        if (toggleBox.isSelected())
+        if (!toggleBox.isSelected())
         {
             if(directoryBox.getText().equals(""))
             {
                 everythingChecked = false;
-            }
-            else
-            {
-                if(!Paths.get(directoryBox.getText()).toFile().exists())
-                {
-                    everythingChecked = false;
-                }
             }
         }
         return everythingChecked;

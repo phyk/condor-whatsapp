@@ -8,7 +8,7 @@
 
     <packaging>jar</packaging>
 
-    <version>1.0-alpha-release</version>
+    <version>1.1-alpha-release</version>
     <name>whatsapp-condor-exporter</name>
 
     <properties>
@@ -67,9 +67,9 @@
                 <version>3.1.2</version>
                 <configuration>
                     <!-- DO NOT include log4j.properties file in your Jar -->
-                    <excludes>
+                    <!--<excludes>
                         <exclude>**/log4j.properties</exclude>
-                    </excludes>
+                    </excludes>-->
                     <archive>
                         <manifest>
                             <mainClass>application.Main</mainClass>

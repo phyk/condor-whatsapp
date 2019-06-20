@@ -332,7 +332,7 @@ public class WhatsappDBToCsv {
             hexString.append(hex);
         }
 
-        return hexString.toString().substring(0,32);
+        return hexString.toString();
     }
 
     private String getLatestDateAndroid()
