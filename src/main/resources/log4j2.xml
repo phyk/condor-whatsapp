@@ -9,8 +9,7 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger name ="condor-whatsapp-main" level="Trace"></Logger>
-        <Root level="error">
+        <Root level="Trace">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File1"/>
         </Root>

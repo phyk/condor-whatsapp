@@ -9,11 +9,11 @@ import javafx.concurrent.Task;
 import java.util.Date;
 
 public class CondorHandler {
-    public void connectToCondor(String licenseKey, String host, String port, String username, String password,
+    public void connectToCondor(String host, String port, String username, String password,
                                 String database, String linkCsv, String actorCsv, String linkExport, String actorExport,
                                 ProcessHandler reportProgress)
     {
-        CondorApi condor = new CondorApi(licenseKey, null);
+        CondorApi condor = new CondorApi();
 
         reportProgress.passMessage("Condor Api opened");
         condor.connectToDataBase(host, port, username, password, database);
@@ -74,7 +74,7 @@ public class CondorHandler {
                                               String actorExport, ProcessHandler reportProgress)
     {
         new CondorHandler().connectToCondor
-                (licenseKey,host, port, username, password, database, linkCsv, actorCsv, linkExport, actorExport, reportProgress);
+                (host, port, username, password, database, linkCsv, actorCsv, linkExport, actorExport, reportProgress);
         reportProgress.passMessage("Condor complete");
         reportProgress.cancel();
         return;

@@ -55,7 +55,7 @@ public class ProcessHandler extends Task {
                     df.getStandard_export_links(), df.getStandard_export_actors(), this);
             this.updateMessage("Calculated honest signals");
         } catch (Exception e) {
-            log.error(e.getStackTrace());
+            log.error(e.getMessage());
         }
     }
 
@@ -63,29 +63,29 @@ public class ProcessHandler extends Task {
     {
         this.updateMessage("Handling Android Data");
         // Get key file and encrypted database to local data folder
-        awa = new AndroidWhatsdumpAdapter(dc.getPhoneNumber());
+        awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
         requestCommand = awa.requestInputProperty();
         isDone = awa.isDoneProperty();
-        requestCommand.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
-            {
-                this.updateMessage("Requesting User Input");
-            }
-        });
-        isDone.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
-            {
-                this.updateMessage("Successfully extracted keyfile and db");
-            }
-        });
-        Thread sub = new Thread(awa);
-        sub.start();
+//        requestCommand.addListener((observable, oldValue, newValue) -> {
+//            if(newValue)
+//            {
+//                this.updateMessage("Requesting User Input");
+//            }
+//        });
+//        isDone.addListener((observable, oldValue, newValue) -> {
+//            if(newValue)
+//            {
+//                this.updateMessage("Successfully extracted keyfile and db");
+//            }
+//        });
+//        Thread sub = new Thread(awa);
+//        sub.start();
 
         try {
-            while(!awa.isDoneProperty().getValue())
-            {
-                Thread.sleep(500);
-            }
+//            while(!awa.isDoneProperty().getValue())
+//            {
+//                Thread.sleep(500);
+//            }
 
             this.updateMessage("Moving the key file and the database to the intermediate directory");
             // Copy the file to the data directory

@@ -11,6 +11,7 @@ import java.util.Scanner;
 public class AndroidWhatsdumpAdapter implements Runnable{
 
     private static Logger log = LogManager.getLogger("condor-whatsapp-main");
+    private final ProcessHandler processHandler;
     private OutputStream err = new OutputStreamLogger(true);
     private OutputStream progress = new OutputStreamLogger(false);
     private PrintWriter commandInput;
@@ -28,9 +29,10 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     private SimpleBooleanProperty isDone = new SimpleBooleanProperty(false);
     private String phoneNumber;
 
-    public AndroidWhatsdumpAdapter(String phoneNumber)
+    public AndroidWhatsdumpAdapter(ProcessHandler processHandler, String phoneNumber)
     {
         this.phoneNumber = phoneNumber;
+        this.processHandler = processHandler;
     }
 
 
@@ -80,7 +82,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     }
 
     public static void main (String args[]) throws InterruptedException {
-        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter("+4915753363836");
+        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(null, "+4915753363836");
         Thread sub = new Thread(awa);
         sub.start();
         while(!awa.requestInputProperty().getValue())
@@ -108,6 +110,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
             }
         }
         public void flush () {
+            processHandler.passMessage(mem);
             if(isErrorStream)
             {
                 log.error(mem);

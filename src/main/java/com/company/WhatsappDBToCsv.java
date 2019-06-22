@@ -28,7 +28,7 @@ public class WhatsappDBToCsv {
         try {
             this.conn = openDbConnection(databaseLocationPath);
         } catch (SQLException e) {
-            log.error(e.getStackTrace());
+            log.error(e.getLocalizedMessage());
         }
     }
 
@@ -53,6 +53,7 @@ public class WhatsappDBToCsv {
 
     public void createCSVExportIos(String pathToLinks, String pathToActors) throws IOException {
         String sqlIos = "SELECT\n" +
+                "ZWAMESSAGE.Z_PK as id," +
                 "ZWAMESSAGE.ZFROMJID as sender," +
                 "ZWAMESSAGE.ZTOJID as receiver,\n" +
                 "ZWAMESSAGE.ZTEXT as content,\n" +
@@ -68,13 +69,13 @@ public class WhatsappDBToCsv {
                 "ON ZWACHATSESSION.Z_PK = ZWAGROUPMEMBER.ZCHATSESSION\n" +
                 "LEFT JOIN ZWAGROUPMEMBER AS groups\n" +
                 "ON ZWAMESSAGE.ZGROUPMEMBER = groups.Z_PK\n" +
-                "WHERE NOT(ZWAMESSAGE.ZTEXT = 0) ";
+                "WHERE NOT(ZWAMESSAGE.ZTEXT = 0)";
 
         Table tbl = null;
         try {
             tbl = createTableWithInfo(sqlIos);
         } catch (SQLException e) {
-            log.error(e.getStackTrace());
+            log.error(e.getLocalizedMessage());
         }
 
         String enddate = null;
@@ -92,15 +93,14 @@ public class WhatsappDBToCsv {
         StringColumn etc = StringColumn.create("Endtime", values);
 
         StringColumn id = StringColumn.create("uuid", length);
-
-        tbl.column("myKey").asStringColumn().mapInto(s -> UUID.randomUUID() + "", id);
+        tbl.column("id").asStringColumn().mapInto(s -> UUID.randomUUID() + "", id);
 
         StringColumn stc = StringColumn.create("Starttime",length);
         tbl.column("timestamp").asStringColumn().mapInto(s -> {
             try {
                 return convertStringToDate(s);
             } catch (ParseException e) {
-                log.error(e.getStackTrace());
+                log.error(e.getLocalizedMessage());
             }
             return "";
         }, stc);
@@ -128,7 +128,7 @@ public class WhatsappDBToCsv {
             String receiver = row.getString("receiver");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = "0";
+            String idMyself = "0@s.whatsapp.net";
 
             if(!idGroup.equals(""))
                 idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
@@ -148,7 +148,7 @@ public class WhatsappDBToCsv {
             if(sender.endsWith("@g.us"))
             {
                 if(idRem.equals(""))
-                    idRem = "PROBLEM";
+                    idRem = idMyself;
                 sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
                 sIdc.append(idRem);
                 tIdc.append(idGroup);
@@ -157,6 +157,15 @@ public class WhatsappDBToCsv {
             }else
             // Chat Logic
             if(sender.endsWith("@s.whatsapp.net") || sender.equals(idMyself))
+            {
+                if(!sender.equals(idMyself))
+                    sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sIdc.append(sender);
+                tIdc.append(receiver);
+                actors.add(sender);
+                actors.add(receiver);
+            }
+            if(sender.endsWith("@broadcast"))
             {
                 if(!sender.equals(idMyself))
                     sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));

@@ -374,7 +374,7 @@ public class Main extends Application {
 
         continueFromDatabaseSettingsButton.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             if(tfMysqlHost.getText().isEmpty() || tfMysqlPort.getText().isEmpty() || tfusername.getText().isEmpty() ||
-                    tfDatabase.getText().isEmpty() || tfCondorLicense.getText().isEmpty() || pf.getText().isEmpty() ||
+                    tfDatabase.getText().isEmpty() || pf.getText().isEmpty() ||
                     tfPhoneNumber.getText().isEmpty()) {
                 Alert alert = new Alert(AlertType.ERROR, "Please fill in all required fields", ButtonType.OK);
                 alert.showAndWait();
