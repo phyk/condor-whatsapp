@@ -7,6 +7,10 @@ import org.apache.logging.log4j.Logger;
 import shared.DefaultConfig;
 import shared.DynamicConfig;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -16,6 +20,7 @@ public class ProcessHandler extends Task {
     private static Logger log = LogManager.getLogger("condor-whatsapp-main");
     private AndroidWhatsdumpAdapter awa;
     private SimpleBooleanProperty requestCommand;
+    private long max;
 
     public ProcessHandler(DynamicConfig dc, DefaultConfig df)
     {
@@ -52,7 +57,9 @@ public class ProcessHandler extends Task {
             this.updateMessage("Calculating honest signals");
             // After condor import generation, import the data to Condor and calculate the Honest Signals
             // Thereafter export the csv Files to the export folder
-            CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysqlPort(),
+            getLineCount(df.getStandard_temp_links());
+
+            CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
                     dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                     df.getStandard_export_links(), df.getStandard_export_actors(), this);
             this.updateMessage("Calculated honest signals");
@@ -103,10 +110,13 @@ public class ProcessHandler extends Task {
                 wcs.close();
 
                 this.updateMessage("Extraction of link and actor csv succesfull");
+
+                getLineCount(df.getStandard_temp_links());
+
                 this.updateMessage("Starting calculation of honest signals");
                 // After condor import generation, import the data to Condor and calculate the Honest Signals
                 // Thereafter export the csv Files to the export folder
-                CondorHandler.calculateHonestSignals(dc.getCondor_license(), "localhost", dc.getMysqlPort(),
+                CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
                         dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                         df.getStandard_export_links(), df.getStandard_export_actors(), this);
                 this.updateMessage("Honest Signals calculated");
@@ -114,6 +124,27 @@ public class ProcessHandler extends Task {
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
+    }
+
+    private void getLineCount(String standard_temp_links) {
+        long result = 0;
+        try (
+                FileReader input = new FileReader("input.txt");
+                LineNumberReader count = new LineNumberReader(input);
+                )
+        {
+            while (count.skip(Long.MAX_VALUE) > 0)
+            {
+                // Loop just in case the file is > Long.MAX_VALUE or skip() decides to not read the entire file
+            }
+
+            result = count.getLineNumber() + 1;                                    // +1 because line index starts at 0
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        max = result;
     }
 
     private boolean checkKeyFileExists(String location) {
@@ -129,6 +160,11 @@ public class ProcessHandler extends Task {
     public void passCommand(String command)
     {
         awa.runCommand(command);
+    }
+
+    public void updateProgress(long progress)
+    {
+        this.updateProgress(progress, max);
     }
 
     @Override

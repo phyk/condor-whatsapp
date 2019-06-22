@@ -5,14 +5,18 @@ import condor.api.contentprocessor.Oscillation;
 import condor.contentprocessor.annotation.turntaking.TimeUnit;
 import condor.data.contract.db.entities.IDataset;
 import javafx.concurrent.Task;
+import shared.MySqlConnector;
 
 import java.util.Date;
 
 public class CondorHandler {
+    private MySqlConnector msc;
+
     public void connectToCondor(String host, String port, String username, String password,
                                 String database, String linkCsv, String actorCsv, String linkExport, String actorExport,
                                 ProcessHandler reportProgress)
     {
+        this.msc = MySqlConnector.create(host, port, username, database, password);
         CondorApi condor = new CondorApi();
 
         reportProgress.passMessage("Condor Api opened");
@@ -69,7 +73,7 @@ public class CondorHandler {
         return;
     }
 
-    public static void calculateHonestSignals(String licenseKey, String host, String port, String username, String password,
+    public static void calculateHonestSignals(String host, String port, String username, String password,
                                               String database, String linkCsv, String actorCsv, String linkExport,
                                               String actorExport, ProcessHandler reportProgress)
     {

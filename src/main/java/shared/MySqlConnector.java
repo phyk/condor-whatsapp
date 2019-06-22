@@ -17,7 +17,12 @@ public class MySqlConnector
 
     public static MySqlConnector create(String host, String port, String database)
     {
-        return new MySqlConnector(host, port, database);
+        return new MySqlConnector(host, port, database, null, null);
+    }
+
+    public static MySqlConnector create(String host, String port, String database, String username, String password)
+    {
+        return new MySqlConnector(host, port, database, username, password);
     }
 
     private MySqlConnector(String host, String port, String database, String username, String password)
@@ -27,11 +32,6 @@ public class MySqlConnector
         this.username = username;
         this.password = password;
         this.database = database;
-    }
-
-    private MySqlConnector(String host, String port, String database)
-    {
-        this(host, port, database, null, null);
     }
 
     public boolean checkCredentials(String username, String password)
