@@ -1,9 +1,7 @@
 package shared;
 
-import condor.storage.db.mysql.MySql;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.sql.*;
 
 public class MySqlConnector
@@ -13,7 +11,7 @@ public class MySqlConnector
     private String host;
     private String password;
     private String username;
-    private static Logger log = LogManager.getLogger("MySqlConnector");
+    private static Logger log = LogManager.getLogger("condor-whatsapp-main");
 
     public static MySqlConnector create(String host, String port, String database)
     {
@@ -37,13 +35,10 @@ public class MySqlConnector
     public boolean checkCredentials(String username, String password)
     {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, username, password);
             this.username = username;
             this.password = password;
             return true;
-        } catch (ClassNotFoundException e) {
-            log.error(e.getLocalizedMessage());
         } catch (SQLException e) {
             log.error(e.getLocalizedMessage());
         }
@@ -56,8 +51,7 @@ public class MySqlConnector
         this.password = password;
     }
 
-    public ResultSet executeQuery(String sql) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
+    public ResultSet executeQuery(String sql) throws SQLException {
         Connection con = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, username, password);
         Statement stm = con.createStatement();
         return stm.executeQuery(sql);

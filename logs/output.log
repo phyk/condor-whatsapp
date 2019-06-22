@@ -1,290 +1,87 @@
-﻿18:30:13.518 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-18:30:13.528 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-18:30:13.703 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-18:30:15.269 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-18:30:16.450 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling Android Data
-18:30:16.477 [JavaFX Application Thread] TRACE condor-whatsapp-main - Requesting User Input
-18:30:16.481 [Thread-8] TRACE condor-whatsapp-main - nullMicrosoft Windows [Version 10.0.17763.557]
-18:30:16.503 [Thread-8] TRACE condor-whatsapp-main - (c) 2018 Microsoft Corporation. Alle Rechte vorbehalten.
-18:30:16.503 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:16.504 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set ANDROID_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\android-sdk
-18:30:16.504 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:16.505 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set JAVA_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\jdk
-18:30:16.505 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:16.505 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\dist\whatsdump\whatsdump.exe --wa-phone +4915753363836 --wa-verify sms
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main -  _    _ _           _      ______                       
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main - | |  | | |         | |     |  _  \                      
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main - | |  | | |__   __ _| |_ ___| | | |_   _ _ __ ___  _ __  
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main - | |/\| | '_ \ / _` | __/ __| | | | | | | '_ ` _ \| '_ \ 
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main - \  /\  / | | | (_| | |_\__ \ |/ /| |_| | | | | | | |_) |
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main -  \/  \/|_| |_|\__,_|\__|___/___/  \__,_|_| |_| |_| .__/ 
-18:30:17.012 [Thread-8] TRACE condor-whatsapp-main -                                                  | |    
-18:30:17.013 [Thread-8] TRACE condor-whatsapp-main -                                                  |_|    
-18:30:17.013 [Thread-8] TRACE condor-whatsapp-main -                         v0.1 beta
-18:30:17.013 [Thread-8] TRACE condor-whatsapp-main -     
-18:30:20.267 [Thread-8] TRACE condor-whatsapp-main - [INFO] Attempting to start ADB server...
-18:30:24.399 [Thread-8] TRACE condor-whatsapp-main - [INFO] ADB server started successfully
-18:30:24.399 [Thread-8] TRACE condor-whatsapp-main - [INFO] Connected to ADB (version 41) @��127.0.0.1:5037
-18:30:24.399 [Thread-8] TRACE condor-whatsapp-main - [INFO] Msgstore location not provided, attempting to find connected devices with ADB...
-18:30:24.399 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:24.435 [Thread-8] TRACE condor-whatsapp-main - 	[0] 6PQ0218208002781 (VTR-L09)
-18:30:24.435 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:24.435 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:24.435 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:24.435 [Thread-8] TRACE condor-whatsapp-main - >> Which device number you want to extract msgstore from?: 
-18:30:24.436 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:24.439 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extract WhatsApp database from device >> 6PQ0218208002781
-18:30:24.439 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp phone number: +49 15753363836
-18:30:24.439 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp verification method: SMS
-18:30:24.439 [Thread-8] TRACE condor-whatsapp-main - 
-18:30:32.681 [Thread-8] TRACE condor-whatsapp-main - >> Continue? (y/n): [INFO] Extracting msgstore.db.crypt from phone to output/15753363836/ ...
-18:30:32.750 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting msgstore database from path: /sdcard/Whatsapp/Databases/msgstore.db.crypt12
-18:30:32.972 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracted msgstore.db SHA-256 hash: 17ef3808d42619c19ee76c2082e60e9e8838d9dd39337a8c098ae2539d9a8e5b
-18:30:32.972 [Thread-8] TRACE condor-whatsapp-main - [INFO] Starting emulator...
-18:30:34.561 [Thread-8] TRACE condor-whatsapp-main - HAX is working and emulator runs in fast virt mode.
-18:30:34.913 [Thread-8] TRACE condor-whatsapp-main - emulator: Cold boot: requested by the user
-18:30:44.955 [Thread-8] TRACE condor-whatsapp-main - [INFO] Trying to register phone on emulator... (may take few minutes)
-18:30:46.045 [Thread-8] TRACE condor-whatsapp-main - [INFO] Installing WhatsApp...
-18:31:05.785 [Thread-8] TRACE condor-whatsapp-main - [INFO] Cleaning WhatsApp...
-18:31:05.800 [Thread-8] TRACE condor-whatsapp-main - [INFO] Moving extracted database into emulator...
-18:31:11.193 [Thread-8] TRACE condor-whatsapp-main - 9999
-18:31:17.160 [Thread-7] ERROR condor-whatsapp-main - nullWARNING: nav buttons not found. Perhaps the device has hardware buttons.
-18:31:20.180 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "OK" at custom ROM alert...
-18:31:23.340 [Thread-8] TRACE condor-whatsapp-main - [INFO] Agreeing to EULA...
-18:31:26.502 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "Continue" on permissions box...
-18:31:29.651 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 1)...
-18:31:32.810 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 2)...
-18:31:35.960 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing country code TextEdit...
-18:31:44.485 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing phone number TextEdit...
-18:31:53.294 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching registration submit button...
-18:31:56.450 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching OK confirmation button...
-18:31:59.538 [Thread-8] TRACE condor-whatsapp-main - [INFO] You should receive a SMS by WhatsApp soon
-18:31:59.539 [Thread-8] TRACE condor-whatsapp-main - 
-18:32:30.825 [Thread-8] TRACE condor-whatsapp-main - >> 6-Digit Verification Code (empty string to resend): [INFO] Dialog message: Verifying���
-18:33:17.239 [Thread-8] TRACE condor-whatsapp-main - [INFO] Restoring messages... (might take a while)
-18:33:26.666 [Thread-8] TRACE condor-whatsapp-main - [INFO] 13,366 messages restored
-18:33:26.666 [Thread-8] TRACE condor-whatsapp-main - [INFO] Phone registered successfully!
-18:33:26.666 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting key...
-18:33:26.672 [Thread-8] TRACE condor-whatsapp-main - [INFO] Private key extracted in C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\output\15753363836\key
-18:33:26.672 [Thread-7] ERROR condor-whatsapp-main - [10448] Failed to execute script whatsdump
-18:41:33.786 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-18:41:33.793 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-18:41:33.985 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-18:41:35.801 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-18:41:37.091 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling Android Data
-18:41:37.097 [JavaFX Application Thread] TRACE condor-whatsapp-main - Requesting User Input
-18:41:37.118 [Thread-8] TRACE condor-whatsapp-main - nullMicrosoft Windows [Version 10.0.17763.557]
-18:41:37.119 [Thread-8] TRACE condor-whatsapp-main - (c) 2018 Microsoft Corporation. Alle Rechte vorbehalten.
-18:41:37.119 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.119 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set ANDROID_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\android-sdk
-18:41:37.119 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.120 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set JAVA_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\jdk
-18:41:37.120 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.120 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\dist\whatsdump\whatsdump.exe --wa-phone +4915753363836 --wa-verify sms
-18:41:37.270 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.270 [Thread-8] TRACE condor-whatsapp-main -  _    _ _           _      ______                       
-18:41:37.270 [Thread-8] TRACE condor-whatsapp-main - | |  | | |         | |     |  _  \                      
-18:41:37.270 [Thread-8] TRACE condor-whatsapp-main - | |  | | |__   __ _| |_ ___| | | |_   _ _ __ ___  _ __  
-18:41:37.270 [Thread-8] TRACE condor-whatsapp-main - | |/\| | '_ \ / _` | __/ __| | | | | | | '_ ` _ \| '_ \ 
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main - \  /\  / | | | (_| | |_\__ \ |/ /| |_| | | | | | | |_) |
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main -  \/  \/|_| |_|\__,_|\__|___/___/  \__,_|_| |_| |_| .__/ 
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main -                                                  | |    
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main -                                                  |_|    
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main -                         v0.1 beta
-18:41:37.271 [Thread-8] TRACE condor-whatsapp-main -     
-18:41:37.866 [Thread-8] TRACE condor-whatsapp-main - [INFO] Connected to ADB (version 41) @ 127.0.0.1:5037
-18:41:37.867 [Thread-8] TRACE condor-whatsapp-main - [INFO] Msgstore location not provided, attempting to find connected devices with ADB...
-18:41:37.867 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.900 [Thread-8] TRACE condor-whatsapp-main - 	[0] 6PQ0218208002781 (VTR-L09)
-18:41:37.900 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.900 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.900 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.901 [Thread-8] TRACE condor-whatsapp-main - >> Which device number you want to extract msgstore from?: 
-18:41:37.901 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:37.903 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extract WhatsApp database from device >> 6PQ0218208002781
-18:41:37.903 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp phone number: +49 15753363836
-18:41:37.903 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp verification method: SMS
-18:41:37.903 [Thread-8] TRACE condor-whatsapp-main - 
-18:41:41.854 [Thread-8] TRACE condor-whatsapp-main - >> Continue? (y/n): [INFO] Extracting msgstore.db.crypt from phone to output/15753363836/ ...
-18:41:41.919 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting msgstore database from path: /sdcard/Whatsapp/Databases/msgstore.db.crypt12
-18:41:42.144 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracted msgstore.db SHA-256 hash: 17ef3808d42619c19ee76c2082e60e9e8838d9dd39337a8c098ae2539d9a8e5b
-18:41:42.145 [Thread-8] TRACE condor-whatsapp-main - [INFO] Starting emulator...
-18:41:42.470 [Thread-8] TRACE condor-whatsapp-main - HAX is working and emulator runs in fast virt mode.
-18:41:42.740 [Thread-8] TRACE condor-whatsapp-main - emulator: Cold boot: requested by the user
-18:41:50.821 [Thread-8] TRACE condor-whatsapp-main - [INFO] Trying to register phone on emulator... (may take few minutes)
-18:41:52.196 [Thread-8] TRACE condor-whatsapp-main - [INFO] Installing WhatsApp...
-18:42:12.507 [Thread-8] TRACE condor-whatsapp-main - [INFO] Cleaning WhatsApp...
-18:42:12.532 [Thread-8] TRACE condor-whatsapp-main - [INFO] Moving extracted database into emulator...
-18:42:17.949 [Thread-8] TRACE condor-whatsapp-main - 9999
-18:42:23.907 [Thread-7] ERROR condor-whatsapp-main - nullWARNING: nav buttons not found. Perhaps the device has hardware buttons.
-18:42:26.826 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "OK" at custom ROM alert...
-18:42:29.976 [Thread-8] TRACE condor-whatsapp-main - [INFO] Agreeing to EULA...
-18:42:33.117 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "Continue" on permissions box...
-18:42:36.256 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 1)...
-18:42:39.387 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 2)...
-18:42:42.535 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing country code TextEdit...
-18:42:50.968 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing phone number TextEdit...
-18:42:59.604 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching registration submit button...
-18:43:22.979 [Thread-8] TRACE condor-whatsapp-main - [INFO] Phone registered successfully!
-18:43:22.979 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting key...
-18:43:22.982 [Thread-8] TRACE condor-whatsapp-main - [ERROR] Could not extract private key!
-18:44:35.600 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-18:44:35.606 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-18:44:35.702 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-18:44:38.912 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-18:44:39.940 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling Android Data
-18:44:39.947 [JavaFX Application Thread] TRACE condor-whatsapp-main - Requesting User Input
-18:44:39.971 [Thread-8] TRACE condor-whatsapp-main - nullMicrosoft Windows [Version 10.0.17763.557]
-18:44:39.971 [Thread-8] TRACE condor-whatsapp-main - (c) 2018 Microsoft Corporation. Alle Rechte vorbehalten.
-18:44:39.971 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:39.972 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set ANDROID_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\android-sdk
-18:44:39.972 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:39.972 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set JAVA_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\jdk
-18:44:39.972 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:39.973 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\dist\whatsdump\whatsdump.exe --wa-phone +4915753363836 --wa-verify sms
-18:44:40.162 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:40.162 [Thread-8] TRACE condor-whatsapp-main -  _    _ _           _      ______                       
-18:44:40.162 [Thread-8] TRACE condor-whatsapp-main - | |  | | |         | |     |  _  \                      
-18:44:40.162 [Thread-8] TRACE condor-whatsapp-main - | |  | | |__   __ _| |_ ___| | | |_   _ _ __ ___  _ __  
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main - | |/\| | '_ \ / _` | __/ __| | | | | | | '_ ` _ \| '_ \ 
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main - \  /\  / | | | (_| | |_\__ \ |/ /| |_| | | | | | | |_) |
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main -  \/  \/|_| |_|\__,_|\__|___/___/  \__,_|_| |_| |_| .__/ 
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main -                                                  | |    
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main -                                                  |_|    
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main -                         v0.1 beta
-18:44:40.163 [Thread-8] TRACE condor-whatsapp-main -     
-18:44:41.786 [Thread-8] TRACE condor-whatsapp-main - [INFO] Attempting to start ADB server...
-18:44:45.830 [Thread-8] TRACE condor-whatsapp-main - [INFO] ADB server started successfully
-18:44:45.831 [Thread-8] TRACE condor-whatsapp-main - [INFO] Connected to ADB (version 41) @��127.0.0.1:5037
-18:44:45.831 [Thread-8] TRACE condor-whatsapp-main - [INFO] Msgstore location not provided, attempting to find connected devices with ADB...
-18:44:45.831 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - 	[0] 6PQ0218208002781 (VTR-L09)
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - >> Which device number you want to extract msgstore from?: 
-18:44:45.866 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:45.869 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extract WhatsApp database from device >> 6PQ0218208002781
-18:44:45.869 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp phone number: +49 15753363836
-18:44:45.869 [Thread-8] TRACE condor-whatsapp-main - [INFO] Using WhatsApp verification method: SMS
-18:44:45.869 [Thread-8] TRACE condor-whatsapp-main - 
-18:44:48.802 [Thread-8] TRACE condor-whatsapp-main - >> Continue? (y/n): [INFO] Extracting msgstore.db.crypt from phone to output/15753363836/ ...
-18:44:48.863 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting msgstore database from path: /sdcard/Whatsapp/Databases/msgstore.db.crypt12
-18:44:49.075 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracted msgstore.db SHA-256 hash: 17ef3808d42619c19ee76c2082e60e9e8838d9dd39337a8c098ae2539d9a8e5b
-18:44:49.075 [Thread-8] TRACE condor-whatsapp-main - [INFO] Starting emulator...
-18:44:49.330 [Thread-8] TRACE condor-whatsapp-main - HAX is working and emulator runs in fast virt mode.
-18:44:49.614 [Thread-8] TRACE condor-whatsapp-main - emulator: Cold boot: requested by the user
-18:44:57.694 [Thread-8] TRACE condor-whatsapp-main - [INFO] Trying to register phone on emulator... (may take few minutes)
-18:44:59.028 [Thread-8] TRACE condor-whatsapp-main - [INFO] Installing WhatsApp...
-18:45:19.861 [Thread-8] TRACE condor-whatsapp-main - [INFO] Cleaning WhatsApp...
-18:45:19.881 [Thread-8] TRACE condor-whatsapp-main - [INFO] Moving extracted database into emulator...
-18:45:25.273 [Thread-8] TRACE condor-whatsapp-main - 9999
-18:45:31.275 [Thread-7] ERROR condor-whatsapp-main - nullWARNING: nav buttons not found. Perhaps the device has hardware buttons.
-18:45:34.119 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "OK" at custom ROM alert...
-18:45:37.287 [Thread-8] TRACE condor-whatsapp-main - [INFO] Agreeing to EULA...
-18:45:40.428 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching "Continue" on permissions box...
-18:45:43.578 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 1)...
-18:45:46.719 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touch "Allow" (step 2)...
-18:45:49.867 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing country code TextEdit...
-18:45:58.290 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching and changing phone number TextEdit...
-18:46:06.910 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching registration submit button...
-18:46:10.067 [Thread-8] TRACE condor-whatsapp-main - [INFO] Touching OK confirmation button...
-18:46:13.145 [Thread-8] TRACE condor-whatsapp-main - [INFO] You should receive a SMS by WhatsApp soon
-18:46:13.146 [Thread-8] TRACE condor-whatsapp-main - 
-18:46:40.962 [Thread-8] TRACE condor-whatsapp-main - >> 6-Digit Verification Code (empty string to resend): [INFO] Dialog message: Verifying���
-18:47:27.581 [Thread-8] TRACE condor-whatsapp-main - [INFO] Restoring messages... (might take a while)
-18:47:37.026 [Thread-8] TRACE condor-whatsapp-main - [INFO] 13,366 messages restored
-18:47:37.027 [Thread-8] TRACE condor-whatsapp-main - [INFO] Phone registered successfully!
-18:47:37.027 [Thread-8] TRACE condor-whatsapp-main - [INFO] Extracting key...
-18:47:37.033 [Thread-8] TRACE condor-whatsapp-main - [INFO] Private key extracted in C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\output\15753363836\key
-18:47:37.033 [Thread-7] ERROR condor-whatsapp-main - [13592] Failed to execute script whatsdump
-18:51:53.127 [Thread-8] TRACE condor-whatsapp-main - 
-19:11:36.291 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:11:36.298 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:11:36.392 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:37:50.505 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:37:50.509 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:37:50.605 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:37:53.737 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-19:37:57.325 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:37:58.304 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
-19:38:46.422 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:38:46.429 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:38:46.604 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:38:48.147 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-19:38:49.062 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling Android Data
-19:38:49.068 [JavaFX Application Thread] TRACE condor-whatsapp-main - Requesting User Input
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - nullMicrosoft Windows [Version 10.0.17763.557]
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - (c) 2018 Microsoft Corporation. Alle Rechte vorbehalten.
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set ANDROID_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\android-sdk
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.090 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>set JAVA_HOME=C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\jdk
-19:38:49.091 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.091 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp\dist\whatsdump\whatsdump.exe --wa-phone +49 --wa-verify sms
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -  _    _ _           _      ______                       
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main - | |  | | |         | |     |  _  \                      
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main - | |  | | |__   __ _| |_ ___| | | |_   _ _ __ ___  _ __  
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main - | |/\| | '_ \ / _` | __/ __| | | | | | | '_ ` _ \| '_ \ 
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main - \  /\  / | | | (_| | |_\__ \ |/ /| |_| | | | | | | |_) |
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -  \/  \/|_| |_|\__,_|\__|___/___/  \__,_|_| |_| |_| .__/ 
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -                                                  | |    
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -                                                  |_|    
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -                         v0.1 beta
-19:38:49.254 [Thread-8] TRACE condor-whatsapp-main -     
-19:38:49.282 [Thread-8] TRACE condor-whatsapp-main - [ERROR] Cannot find WhatsDump AVD; install Android SDK and emulator packages with --install-sdk
-19:38:49.295 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.296 [Thread-8] TRACE condor-whatsapp-main - C:\Users\Philipp\Documents\StudDocs\Master\SS2019\COINSeminar\condor-whatsapp>0
-19:38:49.297 [Thread-7] ERROR condor-whatsapp-main - nullDer Befehl "0" ist entweder falsch geschrieben oder
-19:38:49.297 [Thread-8] TRACE condor-whatsapp-main - 
-19:38:49.297 [Thread-7] ERROR condor-whatsapp-main - konnte nicht gefunden werden.
-19:42:02.395 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:42:02.402 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:42:02.576 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:42:06.345 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-19:42:14.680 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:42:33.954 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:43:16.803 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:43:16.812 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:43:16.984 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:43:18.336 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-19:43:22.802 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:43:48.846 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:43:48.854 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:43:49.029 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:43:50.939 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:44:34.944 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:44:34.950 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:44:35.131 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:44:37.221 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-19:44:38.193 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
-19:44:38.259 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
-19:44:52.688 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:44:52.695 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:44:52.890 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:44:54.118 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-19:46:39.468 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-19:46:39.475 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-19:46:39.597 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-19:46:41.601 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-20:13:03.408 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-20:13:03.415 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-20:13:03.589 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-20:13:04.804 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-20:13:09.051 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
-20:14:51.318 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-20:14:51.325 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-20:14:51.421 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-20:19:44.068 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-20:19:44.075 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-20:19:44.146 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-20:19:44.153 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-20:19:44.180 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-20:19:44.277 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-20:19:46.001 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android true
-20:28:27.914 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
-20:28:27.920 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
-20:28:28.021 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
-20:28:30.071 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+﻿21:13:52.702 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
+21:13:52.709 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
+21:13:52.883 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
+21:13:55.731 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+21:14:07.007 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
+21:14:07.032 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
+21:14:14.247 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculating honest signals
+21:14:14.593 [JavaFX Application Thread] TRACE condor-whatsapp-main - 182874648360800
+21:14:16.856 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor Api opened
+21:14:17.201 [JavaFX Application Thread] TRACE condor-whatsapp-main - Connected to Database
+21:14:18.619 [JavaFX Application Thread] TRACE condor-whatsapp-main - Importing csv Files. This may take some time
+21:35:15.454 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
+21:35:15.461 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
+21:35:15.646 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
+21:35:17.790 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+21:35:19.417 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
+21:35:19.485 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
+21:35:26.291 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculating honest signals
+21:35:26.593 [JavaFX Application Thread] TRACE condor-whatsapp-main - 184146648443100
+21:35:28.821 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor Api opened
+21:35:29.115 [JavaFX Application Thread] TRACE condor-whatsapp-main - Connected to Database
+21:35:30.685 [JavaFX Application Thread] TRACE condor-whatsapp-main - Importing csv Files. This may take some time
+21:53:44.336 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
+21:53:44.342 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
+21:53:44.517 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
+21:53:46.476 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+21:53:47.671 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
+21:53:47.703 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
+21:53:54.432 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculating honest signals
+21:53:56.941 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor Api opened
+21:53:56.942 [JavaFX Application Thread] TRACE condor-whatsapp-main - Connected to Database
+21:53:56.956 [JavaFX Application Thread] TRACE condor-whatsapp-main - Importing csv Files. This may take some time
+21:54:04.111 [JavaFX Application Thread] TRACE condor-whatsapp-main - Import complete
+21:54:04.238 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Degree Centrality
+21:54:04.325 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality
+21:54:05.322 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality Oscillation
+21:54:08.330 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Contribution
+21:54:08.423 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Turn Taking
+21:54:08.687 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Sentiment
+22:13:15.847 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
+22:13:15.855 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
+22:13:16.046 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
+22:13:22.284 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+22:13:26.044 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
+22:13:26.068 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
+22:13:33.415 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculating honest signals
+22:13:36.149 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor Api opened
+22:13:36.150 [JavaFX Application Thread] TRACE condor-whatsapp-main - Connected to Database
+22:13:36.164 [JavaFX Application Thread] TRACE condor-whatsapp-main - Importing csv Files. This may take some time
+22:13:43.544 [JavaFX Application Thread] TRACE condor-whatsapp-main - Import complete
+22:13:43.680 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Degree Centrality
+22:13:43.778 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality
+22:13:44.759 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality Oscillation
+22:13:48.346 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Contribution
+22:13:48.456 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Turn Taking
+22:13:48.777 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Sentiment
+22:14:51.654 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Contribution
+22:14:52.363 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Communities
+22:15:10.593 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Influence
+22:15:12.869 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Reach
+22:15:13.718 [JavaFX Application Thread] TRACE condor-whatsapp-main - Export files generated
+22:15:13.722 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor complete
+22:15:13.756 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated honest signals
+22:49:44.351 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initializing Main
+22:49:44.357 [JavaFX Application Thread] TRACE condor-whatsapp-main - Initialized Textfields
+22:49:44.459 [JavaFX Application Thread] TRACE condor-whatsapp-main - Run through init Methods
+22:49:46.299 [JavaFX Application Thread] TRACE condor-whatsapp-main - Platform is Android false
+22:49:47.576 [JavaFX Application Thread] TRACE condor-whatsapp-main - Handling IOs Data
+22:49:47.622 [JavaFX Application Thread] TRACE condor-whatsapp-main - Starting extraction of message data
+22:49:54.557 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculating honest signals
+22:49:57.239 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor Api opened
+22:49:57.239 [JavaFX Application Thread] TRACE condor-whatsapp-main - Connected to Database
+22:49:57.256 [JavaFX Application Thread] TRACE condor-whatsapp-main - Importing csv Files. This may take some time
+22:50:04.000 [JavaFX Application Thread] TRACE condor-whatsapp-main - Import complete
+22:50:04.123 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Degree Centrality
+22:50:04.218 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality
+22:50:05.323 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Betweeness Centrality Oscillation
+22:50:08.892 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Contribution
+22:50:08.987 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Turn Taking
+22:50:09.287 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculate Sentiment
+22:51:09.794 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Contribution
+22:51:10.425 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Communities
+22:51:27.409 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Influence
+22:51:29.585 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated Reach
+22:51:30.366 [JavaFX Application Thread] TRACE condor-whatsapp-main - Export files generated
+22:51:30.371 [JavaFX Application Thread] TRACE condor-whatsapp-main - Condor complete
+22:51:30.404 [JavaFX Application Thread] TRACE condor-whatsapp-main - Calculated honest signals

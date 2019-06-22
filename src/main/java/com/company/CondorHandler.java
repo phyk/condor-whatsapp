@@ -17,10 +17,12 @@ public class CondorHandler {
                                 ProcessHandler reportProgress)
     {
         this.msc = MySqlConnector.create(host, port, username, database, password);
+
         CondorApi condor = new CondorApi();
 
         reportProgress.passMessage("Condor Api opened");
-        condor.connectToDataBase(host, port, username, password, database);
+        //condor.connectToDataBase(host, port, username, password, database);
+        condor.connectWithoutDatabase();
         String datasetname = "myMessages";
 
         reportProgress.passMessage("Connected to Database");
@@ -61,7 +63,6 @@ public class CondorHandler {
         condor.calcReach(3, true);
         reportProgress.passMessage("Calculated Reach");
 
-
         condor.exportActors(actorExport, ";", null);
         condor.exportEdges(linkExport, ";");
 
@@ -70,6 +71,7 @@ public class CondorHandler {
         condor.unloadDatasets();
         condor.deleteDataset(iDataset);
         reportProgress.passMessage("Dataset deleted");
+
         return;
     }
 

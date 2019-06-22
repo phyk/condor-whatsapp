@@ -129,7 +129,7 @@ public class ProcessHandler extends Task {
     private void getLineCount(String standard_temp_links) {
         long result = 0;
         try (
-                FileReader input = new FileReader("input.txt");
+                FileReader input = new FileReader(standard_temp_links);
                 LineNumberReader count = new LineNumberReader(input);
                 )
         {
