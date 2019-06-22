@@ -67,7 +67,7 @@ public class Main extends Application {
             root = new BorderPane();
 
             // Prefill via Textfile
-            DynamicConfig dc = DynamicConfig.create("config/dynamic_config.txt");
+            DynamicConfig dc = DynamicConfig.create("config/dynamic_config_ph.txt");
             tfMysqlPort.setText(dc.getMysqlPort());
             tfMysqlHost.setText(dc.getMysqlHost());
             tfusername.setText(dc.getUsername());

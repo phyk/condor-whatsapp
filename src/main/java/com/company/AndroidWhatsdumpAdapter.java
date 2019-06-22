@@ -21,10 +21,6 @@ public class AndroidWhatsdumpAdapter implements Runnable{
         return requestInput;
     }
 
-    public SimpleBooleanProperty isDoneProperty() {
-        return isDone;
-    }
-
     private SimpleBooleanProperty requestInput = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty isDone = new SimpleBooleanProperty(false);
     private String phoneNumber;
@@ -60,9 +56,9 @@ public class AndroidWhatsdumpAdapter implements Runnable{
             this.isDone.set(true);
             progress.write(returnCode);
         } catch (InterruptedException e) {
-            log.error(e.getStackTrace());
+            log.error(e.getLocalizedMessage());
         } catch (IOException e) {
-            log.error(e.getStackTrace());
+            log.error(e.getLocalizedMessage());
         } finally {
             this.commandInput.close();
             try {
