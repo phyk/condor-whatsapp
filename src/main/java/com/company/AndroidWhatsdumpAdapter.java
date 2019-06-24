@@ -47,6 +47,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
             runCommand(new File("dist/whatsdump/whatsdump.exe").getAbsolutePath() +
                     " --wa-phone "+phoneNumber + " --wa-verify sms");
             runCommand("0");
+            runCommand("y");
 
             synchronized (this)
             {
