@@ -51,7 +51,7 @@ public class WhatsappDBToCsv {
         }
     }
 
-    public void createCSVExportIos(String pathToLinks, String pathToActors) throws IOException {
+    public void createCSVExportIos(String pathToLinks, String pathToActors, String phoneNumber) throws IOException {
         String sqlIos = "SELECT\n" +
                 "ZWAMESSAGE.Z_PK as id," +
                 "ZWAMESSAGE.ZFROMJID as sender," +
@@ -128,7 +128,7 @@ public class WhatsappDBToCsv {
             String receiver = row.getString("receiver");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = "0@s.whatsapp.net";
+            String idMyself = phoneNumber+"@s.whatsapp.net";
 
             if(!idGroup.equals(""))
                 idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
@@ -138,11 +138,7 @@ public class WhatsappDBToCsv {
 
             if(receiver.equals(""))
                 receiver = idMyself;
-            else
-                receiver = toHexString(sha.digest(receiver.substring(0,13).getBytes()));
-
-            if(!idRem.equals(""))
-                idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
+            receiver = toHexString(sha.digest(receiver.substring(0,13).getBytes()));
 
             // Group Logic
             if(sender.endsWith("@g.us"))
@@ -150,6 +146,7 @@ public class WhatsappDBToCsv {
                 if(idRem.equals(""))
                     idRem = idMyself;
                 sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
                 sIdc.append(idRem);
                 tIdc.append(idGroup);
                 actors.add(idRem);
@@ -158,8 +155,7 @@ public class WhatsappDBToCsv {
             // Chat Logic
             if(sender.endsWith("@s.whatsapp.net") || sender.equals(idMyself))
             {
-                if(!sender.equals(idMyself))
-                    sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
                 sIdc.append(sender);
                 tIdc.append(receiver);
                 actors.add(sender);
@@ -167,8 +163,7 @@ public class WhatsappDBToCsv {
             }
             if(sender.endsWith("@broadcast"))
             {
-                if(!sender.equals(idMyself))
-                    sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
                 sIdc.append(sender);
                 tIdc.append(receiver);
                 actors.add(sender);

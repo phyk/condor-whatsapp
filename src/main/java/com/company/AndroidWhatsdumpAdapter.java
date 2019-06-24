@@ -107,6 +107,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
         }
         public void flush () {
             processHandler.passMessage(mem);
+
             if(isErrorStream)
             {
                 log.error(mem);

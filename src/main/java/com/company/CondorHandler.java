@@ -20,7 +20,7 @@ public class CondorHandler {
         CondorApi condor = new CondorApi();
 
         reportProgress.passMessage("Condor Api opened");
-        condor.connectToDataBase(host, port, username, password, database);
+        condor.connectWithoutDatabase();
         String datasetname = "myMessages";
 
         reportProgress.passMessage("Connected to Database");

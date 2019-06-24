@@ -20,7 +20,6 @@ public class ProcessHandler extends Task {
     private static Logger log = LogManager.getLogger("condor-whatsapp-main");
     private AndroidWhatsdumpAdapter awa;
     private SimpleBooleanProperty requestCommand;
-    private long max;
 
     public ProcessHandler(DynamicConfig dc, DefaultConfig df)
     {
@@ -51,13 +50,12 @@ public class ProcessHandler extends Task {
             this.updateMessage("Starting extraction of message data");
             // Use local sqlite Database to generate condor-readable import
             WhatsappDBToCsv wcs = WhatsappDBToCsv.create(df.getStandard_db_location());
-            wcs.createCSVExportIos(df.getStandard_temp_links(), df.getStandard_temp_actors());
+            wcs.createCSVExportIos(df.getStandard_temp_links(), df.getStandard_temp_actors(), dc.getPhoneNumber());
             wcs.close();
             this.updateMessage("Extraction finished");
             this.updateMessage("Calculating honest signals");
             // After condor import generation, import the data to Condor and calculate the Honest Signals
             // Thereafter export the csv Files to the export folder
-            getLineCount(df.getStandard_temp_links());
 
             CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
                     dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
@@ -111,8 +109,6 @@ public class ProcessHandler extends Task {
 
                 this.updateMessage("Extraction of link and actor csv succesfull");
 
-                getLineCount(df.getStandard_temp_links());
-
                 this.updateMessage("Starting calculation of honest signals");
                 // After condor import generation, import the data to Condor and calculate the Honest Signals
                 // Thereafter export the csv Files to the export folder
@@ -124,27 +120,6 @@ public class ProcessHandler extends Task {
         } catch (Exception e) {
             log.error(e.getStackTrace());
         }
-    }
-
-    private void getLineCount(String standard_temp_links) {
-        long result = 0;
-        try (
-                FileReader input = new FileReader("input.txt");
-                LineNumberReader count = new LineNumberReader(input);
-                )
-        {
-            while (count.skip(Long.MAX_VALUE) > 0)
-            {
-                // Loop just in case the file is > Long.MAX_VALUE or skip() decides to not read the entire file
-            }
-
-            result = count.getLineNumber() + 1;                                    // +1 because line index starts at 0
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        max = result;
     }
 
     private boolean checkKeyFileExists(String location) {
@@ -160,11 +135,6 @@ public class ProcessHandler extends Task {
     public void passCommand(String command)
     {
         awa.runCommand(command);
-    }
-
-    public void updateProgress(long progress)
-    {
-        this.updateProgress(progress, max);
     }
 
     @Override
