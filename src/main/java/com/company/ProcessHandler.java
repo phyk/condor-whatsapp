@@ -84,7 +84,7 @@ public class ProcessHandler extends Task {
         sub.start();
 
         try {
-            while(checkKeyFileExists("output"+dc.getPhoneNumber().substring(3)+"/key"))
+            while(!checkKeyFileExists("output"+dc.getPhoneNumber().substring(3)+"/key"))
             {
                 Thread.sleep(500);
             }
