@@ -1,6 +1,8 @@
 package com.company;
 
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,28 +68,37 @@ public class ProcessHandler extends Task {
         }
     }
 
-    private void handleAndroidWhatsapp(DynamicConfig dc, DefaultConfig df)
-    {
+    private void handleAndroidWhatsapp(DynamicConfig dc, DefaultConfig df) {
         this.updateMessage("Handling Android Data");
         // Get key file and encrypted database to local data folder
         awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
         requestCommand = awa.requestInputProperty();
         requestCommand.addListener((observable, oldValue, newValue) -> {
-            if(newValue)
-            {
+            if (newValue) {
                 this.updateMessage("Requesting User Input");
             }
         });
         Thread sub = new Thread(awa);
         sub.start();
 
-        try {
-            while(checkKeyFileExists("output"+dc.getPhoneNumber().substring(3)+"/key"))
-            {
-                Thread.sleep(500);
-            }
-            sub.interrupt();
 
+        //while(!checkKeyFileExists("output/"+dc.getPhoneNumber().substring(3)+"/key"))
+        //{
+        //    Thread.sleep(500);
+        //}
+        this.messageProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue.endsWith("Failed to execute script whatsdump") && checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")) {
+                    sub.interrupt();
+                    continueWithWhatsappAndroid();
+                }
+            }
+        });
+    }
+    private void continueWithWhatsappAndroid()
+    {
+        try {
             this.updateMessage("Moving the key file and the database to the intermediate directory");
             // Copy the file to the data directory
             DbExtractor.extractEncryptedDbAndKeyFile(
