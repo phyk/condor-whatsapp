@@ -186,7 +186,8 @@ public class Main extends Application {
         inputBox.getChildren().addAll(buttonBox);
 
         root.setCenter(contentBox);
-        root.setBottom(inputBox);
+        if(platformIsAndroid)
+            root.setBottom(inputBox);
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("css/application.css").toExternalForm());

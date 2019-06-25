@@ -51,10 +51,6 @@ public class CondorHandler {
 
         condor.calcCommunity();
         reportProgress.passMessage("Calculated Communities");
-        Date insert = new Date();
-        insert.setTime(0);
-        condor.calcInfluence("German", "content", insert);
-        reportProgress.passMessage("Calculated Influence");
         condor.calcReach(3, true);
         reportProgress.passMessage("Calculated Reach");
 

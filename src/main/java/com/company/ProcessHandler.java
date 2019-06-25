@@ -62,35 +62,36 @@ public class ProcessHandler extends Task {
             CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
                     dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                     df.getStandard_export_links(), df.getStandard_export_actors(), this);
-            this.updateMessage("Calculated honest signals");
+            this.updateMessage("Export files generated. You can now close this app");
         } catch (Exception e) {
             log.error(e.getMessage());
         }
     }
 
     private void handleAndroidWhatsapp(DynamicConfig dc, DefaultConfig df) {
-        this.updateMessage("Handling Android Data");
-        // Get key file and encrypted database to local data folder
-        awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
-        requestCommand = awa.requestInputProperty();
-        requestCommand.addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                this.updateMessage("Requesting User Input");
-            }
-        });
-        Thread sub = new Thread(awa);
-        sub.start();
+//        this.updateMessage("Handling Android Data");
+//        // Get key file and encrypted database to local data folder
+//        awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
+//        requestCommand = awa.requestInputProperty();
+//        requestCommand.addListener((observable, oldValue, newValue) -> {
+//            if (newValue) {
+//                this.updateMessage("Requesting User Input");
+//            }
+//        });
+//        Thread sub = new Thread(awa);
+//        sub.start();
 
 
         //while(!checkKeyFileExists("output/"+dc.getPhoneNumber().substring(3)+"/key"))
         //{
         //    Thread.sleep(500);
         //}
+        continueWithWhatsappAndroid();
         this.messageProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue.endsWith("Failed to execute script whatsdump") && checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")) {
-                    sub.interrupt();
+                    //sub.interrupt();
                     continueWithWhatsappAndroid();
                 }
             }
@@ -126,7 +127,7 @@ public class ProcessHandler extends Task {
                 CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
                         dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
                         df.getStandard_export_links(), df.getStandard_export_actors(), this);
-                this.updateMessage("Honest Signals calculated");
+                this.updateMessage("Export files generated. You can now close this app");
             }
         } catch (Exception e) {
             log.error(e.getStackTrace());

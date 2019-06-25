@@ -238,7 +238,9 @@ public class WhatsappDBToCsv {
         tbl.column("linkid").asStringColumn().mapInto(s -> (UUID.randomUUID() + "").replaceAll("-",""), id);
 
         StringColumn content = StringColumn.create("content", length);
-        tbl.column("content").asStringColumn().mapInto(s -> s.replace("\r\n",". ").replace(";","").replace("\r",""), content);
+        tbl.column("content").asStringColumn().mapInto(s -> s.replaceAll("(\\r)",".")
+                .replaceAll("\\n"," ").replaceAll(";",",")
+                .replaceAll("\r", ".").replaceAll("\n", " "), content);
 
         MessageDigest sha = null;
             try {
