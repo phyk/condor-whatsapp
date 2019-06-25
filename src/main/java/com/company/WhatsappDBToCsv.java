@@ -45,7 +45,7 @@ public class WhatsappDBToCsv {
 
         if(message.equals("Decryption of crypt12 file was successful.")) {
             WhatsappDBToCsv wcs = WhatsappDBToCsv.create("data/msgstore.db");
-            wcs.createCSVExportAndroid("data/links.csv","data/actors.csv");
+            wcs.createCSVExportAndroid("data/links.csv","data/actors.csv", "");
             wcs.closeDbConnection();
             System.exit(0);
         }
@@ -108,7 +108,7 @@ public class WhatsappDBToCsv {
         StringColumn content = StringColumn.create("content", length);
         tbl.column("content").asStringColumn().mapInto(s -> s.replaceAll("(\\r)",".")
                 .replaceAll("\\n"," ").replaceAll(";",",")
-                .replaceAll("\r", ".").replaceAll("\n", " "), content);
+                .replaceAll("\r", ".").replaceAll("\n", " ").replaceAll("\"",""), content);
 
 
         MessageDigest sha = null;
@@ -128,7 +128,7 @@ public class WhatsappDBToCsv {
             String receiver = row.getString("receiver");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = phoneNumber+"@s.whatsapp.net";
+            String idMyself = phoneNumber.substring(1)+"@s.whatsapp.net";
 
             if(!idGroup.equals(""))
                 idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
@@ -200,18 +200,17 @@ public class WhatsappDBToCsv {
         cw.write(actorTable, cwo.build());
     }
 
-    public void createCSVExportAndroid(String pathToLinks, String pathToActors) throws IOException {
-        String sqlAndroid = "SELECT main.messages._id AS linkid," +
-                "main.messages.data AS content, " +
-                "main.messages.key_remote_jid as idRef, " +
-                "main.messages.key_from_me as myKey, " +
-                "cast(main.messages.timestamp as text) as timestamp, \n" +
-                "main.messages.remote_resource as idRem, " +
+    public void createCSVExportAndroid(String pathToLinks, String pathToActors, String phoneNumber) throws IOException {
+        String sqlAndroid = "SELECT main.messages._id AS linkid,\n" +
+                "main.messages.data AS content,\n" +
+                "main.messages.key_remote_jid as idRef, \n" +
+                "main.messages.key_from_me as myKey, \n" +
+                "cast(main.messages.timestamp as text) as timestamp,\n" +
+                "main.messages.remote_resource as idRem, \n" +
                 "main.group_participants.jid as idGroup \n" +
                 "FROM main.messages LEFT JOIN main.group_participants\n" +
                 "ON main.messages.key_remote_jid = main.group_participants.gjid\n" +
-                "WHERE (NOT (idRem = idGroup AND myKey = 0)) AND " +
-                "(NOT (mykey = 1 AND idRef LIKE '@g.us' AND idGroup = '')) AND NOT idRef LIKE 'status@broadcast'";
+                "WHERE NOT idRef LIKE 'status@broadcast'";
 
         Table tbl = null;
         try {
@@ -240,7 +239,7 @@ public class WhatsappDBToCsv {
         StringColumn content = StringColumn.create("content", length);
         tbl.column("content").asStringColumn().mapInto(s -> s.replaceAll("(\\r)",".")
                 .replaceAll("\\n"," ").replaceAll(";",",")
-                .replaceAll("\r", ".").replaceAll("\n", " "), content);
+                .replaceAll("\r", ".").replaceAll("\n", " ").replaceAll("\"", ""), content);
 
         MessageDigest sha = null;
             try {
@@ -258,7 +257,7 @@ public class WhatsappDBToCsv {
             String idRef = row.getString("idRef");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = "0";
+            String idMyself = toHexString(sha.digest((phoneNumber.substring(1)+"@s.whatsapp.net").substring(0,13).getBytes()));
 
             if(idGroup.equals(""))
                 idGroup = idMyself;
@@ -266,6 +265,8 @@ public class WhatsappDBToCsv {
                 idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
             if(!idRem.equals(""))
                 idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
+            else
+                idRem = idMyself;
             // Group Logic
             if(idRef.endsWith("@g.us"))
             {

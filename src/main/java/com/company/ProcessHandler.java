@@ -116,7 +116,7 @@ public class ProcessHandler extends Task {
             // If decryption worked, generate condor temporary import
             if(message.equals("Decryption of crypt12 file was successful.")) {
                 WhatsappDBToCsv wcs = WhatsappDBToCsv.create(df.getStandard_db_location());
-                wcs.createCSVExportAndroid(df.getStandard_temp_links(), df.getStandard_temp_actors());
+                wcs.createCSVExportAndroid(df.getStandard_temp_links(), df.getStandard_temp_actors(), dc.getPhoneNumber());
                 wcs.close();
 
                 this.updateMessage("Extraction of link and actor csv succesfull");
