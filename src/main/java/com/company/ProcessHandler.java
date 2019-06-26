@@ -69,29 +69,33 @@ public class ProcessHandler extends Task {
     }
 
     private void handleAndroidWhatsapp(DynamicConfig dc, DefaultConfig df) {
-//        this.updateMessage("Handling Android Data");
-//        // Get key file and encrypted database to local data folder
-//        awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
-//        requestCommand = awa.requestInputProperty();
-//        requestCommand.addListener((observable, oldValue, newValue) -> {
-//            if (newValue) {
-//                this.updateMessage("Requesting User Input");
-//            }
-//        });
-//        Thread sub = new Thread(awa);
-//        sub.start();
+        this.updateMessage("Handling Android Data");
+        // Get key file and encrypted database to local data folder
+       awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
+        requestCommand = awa.requestInputProperty();
+        requestCommand.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+               this.updateMessage("Requesting User Input");
+            }
+        });
+        Thread sub = new Thread(awa);
+        sub.start();
 
 
-        //while(!checkKeyFileExists("output/"+dc.getPhoneNumber().substring(3)+"/key"))
-        //{
-        //    Thread.sleep(500);
-        //}
+        while(!checkKeyFileExists("output/"+dc.getPhoneNumber().substring(3)+"/key"))
+        {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         continueWithWhatsappAndroid();
         this.messageProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue.endsWith("Failed to execute script whatsdump") && checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")) {
-                    //sub.interrupt();
+                    sub.interrupt();
                     continueWithWhatsappAndroid();
                 }
             }
