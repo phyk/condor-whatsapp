@@ -81,15 +81,17 @@ public class ProcessHandler extends Task {
         Thread sub = new Thread(awa);
         sub.start();
 
-        this.messageProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue.endsWith("Failed to execute script whatsdump") && checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")) {
-                    sub.interrupt();
-                    continueWithWhatsappAndroid();
-                }
+        while( !checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key") || sub.isAlive()) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                log.error(e.getLocalizedMessage());
             }
-        });
+        }
+
+        continueWithWhatsappAndroid();
+
+        sub.interrupt();
     }
     private void continueWithWhatsappAndroid()
     {
@@ -124,7 +126,7 @@ public class ProcessHandler extends Task {
                 this.updateMessage("Export files generated. You can now close this app");
             }
         } catch (Exception e) {
-            log.error(e.getStackTrace());
+            log.error(e.getLocalizedMessage());
         }
     }
 

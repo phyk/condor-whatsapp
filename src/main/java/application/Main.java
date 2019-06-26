@@ -173,6 +173,7 @@ public class Main extends Application {
         sendCommandButton.setDisable(true);
         sendCommandButton.setOnAction( event -> {
             dbProcess.passCommand(tfCommand.getText());
+            dbProcess.passMessage("exit()");
         });
 
         Button requestButton = new Button("Request new activation code");
