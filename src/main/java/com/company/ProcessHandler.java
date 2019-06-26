@@ -81,16 +81,6 @@ public class ProcessHandler extends Task {
         Thread sub = new Thread(awa);
         sub.start();
 
-
-        while(!checkKeyFileExists("output/"+dc.getPhoneNumber().substring(3)+"/key"))
-        {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        continueWithWhatsappAndroid();
         this.messageProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
