@@ -166,11 +166,10 @@ public class Main extends Application {
         inputLabel.setTextFill(Color.WHITE);
         inputLabel.setFont(new Font(14));
         inputBox.getChildren().add(inputLabel);
-        tfCommand.setEditable(false);
         inputBox.getChildren().add(tfCommand);
         sendCommandButton = new Button("Send activation code");
         sendCommandButton.setPrefWidth(300);
-        sendCommandButton.setDisable(true);
+
         sendCommandButton.setOnAction( event -> {
             //TODO regex
             if(tfCommand.getText().length()==7&&tfCommand.getText().contains("-")) {
