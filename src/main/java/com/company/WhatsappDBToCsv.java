@@ -128,42 +128,43 @@ public class WhatsappDBToCsv {
             String receiver = row.getString("receiver");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = phoneNumber.substring(1)+"@s.whatsapp.net";
+
+            String idMyself = phoneNumber.replace("+", "")+"@s.whatsapp.net";
 
             if(!idGroup.equals(""))
-                idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
+                idGroup = toHexString(sha.digest(idGroup.split("@")[0].getBytes()));
 
             if(sender.equals(""))
                 sender = idMyself;
 
             if(receiver.equals(""))
                 receiver = idMyself;
-            receiver = toHexString(sha.digest(receiver.substring(0,13).getBytes()));
+            receiver = toHexString(sha.digest(receiver.split("@")[0].getBytes()));
 
             // Group Logic
             if(sender.endsWith("@g.us"))
             {
                 if(idRem.equals(""))
                     idRem = idMyself;
-                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
-                idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
+                sender = toHexString(sha.digest(sender.split("@")[0].getBytes()));
+                idRem = toHexString(sha.digest(idRem.split("@")[0].getBytes()));
                 sIdc.append(idRem);
                 tIdc.append(idGroup);
                 actors.add(idRem);
                 actors.add(idGroup);
-            }else
+            }
             // Chat Logic
-            if(sender.endsWith("@s.whatsapp.net") || sender.equals(idMyself))
+            else if(sender.endsWith("@s.whatsapp.net") || sender.equals(idMyself))
             {
-                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sender = toHexString(sha.digest(sender.split("@")[0].getBytes()));
                 sIdc.append(sender);
                 tIdc.append(receiver);
                 actors.add(sender);
                 actors.add(receiver);
             }
-            if(sender.endsWith("@broadcast"))
+            else if(sender.endsWith("@broadcast"))
             {
-                sender = toHexString(sha.digest(sender.substring(0,13).getBytes()));
+                sender = toHexString(sha.digest(sender.split("@")[0].getBytes()));
                 sIdc.append(sender);
                 tIdc.append(receiver);
                 actors.add(sender);
@@ -210,7 +211,7 @@ public class WhatsappDBToCsv {
                 "main.group_participants.jid as idGroup \n" +
                 "FROM main.messages LEFT JOIN main.group_participants\n" +
                 "ON main.messages.key_remote_jid = main.group_participants.gjid\n" +
-                "WHERE NOT idRef LIKE 'status@broadcast'";
+                "WHERE NOT idRef LIKE 'status@broadcast' AND NOT idRef = '-1'";
 
         Table tbl = null;
         try {
@@ -218,6 +219,7 @@ public class WhatsappDBToCsv {
         } catch (SQLException e) {
             log.error(e.getStackTrace());
         }
+
 
         String enddate = getLatestDateAndroid();
         String startdate = getFirstDateAndroid();
@@ -257,14 +259,16 @@ public class WhatsappDBToCsv {
             String idRef = row.getString("idRef");
             String idGroup = row.getString("idGroup");
             String idRem = row.getString("idRem");
-            String idMyself = toHexString(sha.digest((phoneNumber.substring(1)+"@s.whatsapp.net").substring(0,13).getBytes()));
+            
+            String idMyself = toHexString(sha.digest((phoneNumber.replace("+", "")).getBytes()));
+
 
             if(idGroup.equals(""))
                 idGroup = idMyself;
             else
-                idGroup = toHexString(sha.digest(idGroup.substring(0,13).getBytes()));
+                idGroup = toHexString(sha.digest(idGroup.split("@")[0].getBytes()));
             if(!idRem.equals(""))
-                idRem = toHexString(sha.digest(idRem.substring(0,13).getBytes()));
+                idRem = toHexString(sha.digest(idRem.split("@")[0].getBytes()));
             else
                 idRem = idMyself;
             // Group Logic
@@ -287,7 +291,7 @@ public class WhatsappDBToCsv {
             // Chat Logic
             if(idRef.endsWith("@s.whatsapp.net"))
             {
-                idRef = toHexString(sha.digest(idRef.substring(0,13).getBytes()));
+                idRef = toHexString(sha.digest(idRef.split("@")[0].getBytes()));
                 if(fromMe)
                 {
                     sIdc.append(idMyself);
@@ -300,6 +304,23 @@ public class WhatsappDBToCsv {
                 }
                 actors.add(idRef);
                 actors.add(idMyself);
+            }
+            if(sIdc.isEmpty()){
+
+                System.out.println("Current row "+row.toString());
+
+                System.out.println("boolean from me: "+(row.getInt("myKey") == 1));
+                System.out.println("idRef befor hash: "+row.getString("idRef"));
+                System.out.println("idGroup befor hash: "+row.getString("idGroup"));
+                System.out.println("idRem befor hash: "+row.getString("idRem"));
+
+                System.out.println("sIdc: "+sIdc);
+                System.out.println("tIdc: "+tIdc);
+                System.out.println("idMyself: "+idMyself);
+                System.out.println("idRef: "+idRef);
+                System.out.println("idGroup: "+idGroup);
+                System.out.println("idRem: "+idRem);
+                System.out.println("");
             }
         }
 

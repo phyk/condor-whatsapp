@@ -172,13 +172,21 @@ public class Main extends Application {
         sendCommandButton.setPrefWidth(300);
         sendCommandButton.setDisable(true);
         sendCommandButton.setOnAction( event -> {
-            dbProcess.passCommand(tfCommand.getText());
-            dbProcess.passMessage("exit()");
+            //TODO regex
+            if(tfCommand.getText().length()==7&&tfCommand.getText().contains("-")) {
+                sendCommandButton.setDisable(true);
+                tfCommand.setDisable(true);
+                dbProcess.passCommand(tfCommand.getText());
+                dbProcess.passMessage("exit()");
+            }
         });
 
         Button requestButton = new Button("Request new activation code");
         requestButton.setOnAction( event -> {
             dbProcess.passCommand("");
+            tfCommand.setDisable(false);
+            sendCommandButton.setDisable(false);
+            tfCommand.setText("");
         });
         requestButton.setPrefWidth(300);
 

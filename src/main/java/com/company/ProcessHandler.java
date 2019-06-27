@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 
 public class ProcessHandler extends Task {
     private DynamicConfig dc;
@@ -70,28 +71,56 @@ public class ProcessHandler extends Task {
 
     private void handleAndroidWhatsapp(DynamicConfig dc, DefaultConfig df) {
         this.updateMessage("Handling Android Data");
-        // Get key file and encrypted database to local data folder
-       awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
-        requestCommand = awa.requestInputProperty();
-        requestCommand.addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-               this.updateMessage("Requesting User Input");
-            }
-        });
-        Thread sub = new Thread(awa);
-        sub.start();
+        // Get key file and encrypted database to local data folder;
+       // if(checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")){
+        if(checkKeyFileExists("data/msgstore.db")){
+            this.updateMessage("Decrypted database already existing");
 
-        while( !checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key") || sub.isAlive()) {
+            // If decryption worked, generate condor temporary import
+            WhatsappDBToCsv wcs = WhatsappDBToCsv.create("data/msgstore.db");
             try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                log.error(e.getLocalizedMessage());
+                wcs.createCSVExportAndroid(df.getStandard_temp_links(), df.getStandard_temp_actors(), dc.getPhoneNumber());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            try {
+                wcs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            this.updateMessage("Extraction of link and actor csv succesfull");
+
+                this.updateMessage("Starting calculation of honest signals");
+                // After condor import generation, import the data to Condor and calculate the Honest Signals
+                // Thereafter export the csv Files to the export folder
+                CondorHandler.calculateHonestSignals("localhost", dc.getMysqlPort(),
+                        dc.getUsername(), dc.getPassword(), dc.getDatabase(), df.getStandard_temp_links(), df.getStandard_temp_actors(),
+                        df.getStandard_export_links(), df.getStandard_export_actors(), this);
+                this.updateMessage("Export files generated. You can now close this app");
+
         }
+        else {
+            awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
+            requestCommand = awa.requestInputProperty();
+            requestCommand.addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    this.updateMessage("If you have not entered your activation code and already received it, please enter it now");
+                }
+            });
+            Thread sub = new Thread(awa);
+            sub.start();
 
-        continueWithWhatsappAndroid();
+            while (!checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key") || sub.isAlive()) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    log.error(e.getLocalizedMessage());
+                }
+            }
 
-        sub.interrupt();
+            continueWithWhatsappAndroid();
+        }
     }
     private void continueWithWhatsappAndroid()
     {
