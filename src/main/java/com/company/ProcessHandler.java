@@ -100,6 +100,9 @@ public class ProcessHandler extends Task {
                 this.updateMessage("Export files generated. You can now close this app");
 
         }
+        else if (checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/key")&&checkKeyFileExists("output/" + dc.getPhoneNumber().substring(3) + "/msgstore.db.crypt12")){
+            continueWithWhatsappAndroid();
+        }
         else {
             awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
             requestCommand = awa.requestInputProperty();
