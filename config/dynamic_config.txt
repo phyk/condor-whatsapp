@@ -11,3 +11,4 @@ platform=
 iosBackupDirectory=
 # format +49<number without leading 0>
 phoneNumber=+49
+operatingSystem=Mac

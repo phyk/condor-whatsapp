@@ -22,6 +22,7 @@ public class DynamicConfig {
     private StringProperty iosBackupDirectory;
     private StringProperty phoneNumber;
     private StringProperty mySqlHost;
+    private BooleanProperty isMacOs;
 
     private DynamicConfig(String path, boolean empty)
     {
@@ -35,6 +36,7 @@ public class DynamicConfig {
         this.phoneNumber = new SimpleStringProperty("");
         this.platformIsAndroid = new SimpleBooleanProperty();
         this.mySqlHost = new SimpleStringProperty("");
+        this.isMacOs = new SimpleBooleanProperty();
 
         this.path.setValue(path);
         if(!empty)
@@ -71,6 +73,8 @@ public class DynamicConfig {
                             phoneNumber.setValue(items[1]);break;
                         case "mysqlHost":
                             mySqlHost.setValue(items[1]);break;
+                        case "operatingSystem":
+                            isMacOs.setValue(items[1].equals("Mac"));break;
                         default:
                             break;
                     }
@@ -229,6 +233,11 @@ public class DynamicConfig {
 
     public void setIosBackupDirectory(String iosBackupDirectory) {
         this.iosBackupDirectory.setValue(iosBackupDirectory);
+    }
+
+    public boolean isMacOs()
+    {
+        return isMacOs.getValue();
     }
 
     public void close() {

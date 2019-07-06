@@ -16,6 +16,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     private OutputStream progress = new OutputStreamLogger(false);
     private PrintWriter commandInput;
     private Process process;
+    private boolean platformIsMac;
 
     public SimpleBooleanProperty requestInputProperty() {
         return requestInput;
@@ -25,10 +26,11 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     private SimpleBooleanProperty isDone = new SimpleBooleanProperty(false);
     private String phoneNumber;
 
-    public AndroidWhatsdumpAdapter(ProcessHandler processHandler, String phoneNumber)
+    public AndroidWhatsdumpAdapter(ProcessHandler processHandler, String phoneNumber, boolean platformIsMac)
     {
         this.phoneNumber = phoneNumber;
         this.processHandler = processHandler;
+        this.platformIsMac = platformIsMac;
     }
 
 
@@ -37,15 +39,27 @@ public class AndroidWhatsdumpAdapter implements Runnable{
 //                "--wa-phone +4915753363836", "--wa-verify sms" };
         try {
 
-            this.process = Runtime.getRuntime().exec(new String[]{"cmd"});
+            if(!platformIsMac) {
+                this.process = Runtime.getRuntime().exec(new String[]{"cmd"});
+            }else
+            {
+                this.process = Runtime.getRuntime().exec(new String[]{"/bin/bash"});
+            }
             new Thread(new SyncPipe(this.process.getErrorStream(), err)).start();
             new Thread(new SyncPipe(this.process.getInputStream(), progress)).start();
             this.commandInput = new PrintWriter(this.process.getOutputStream());
 
             runCommand("set ANDROID_HOME=" + new File("android-sdk").getAbsolutePath());
             runCommand("set JAVA_HOME=" + new File("jdk").getAbsolutePath());
-            runCommand(new File("dist/whatsdump/whatsdump.exe").getAbsolutePath() +
-                    " --wa-phone "+phoneNumber + " --wa-verify sms"); //  --show-emulator
+            if(!platformIsMac) {
+                runCommand(new File("dist/whatsdump/whatsdump.exe").getAbsolutePath() +
+                        " --wa-phone " + phoneNumber + " --wa-verify sms"); //  --show-emulator
+            }
+            else
+            {
+                runCommand(new File("dist/whatsdump/whatsdump").getAbsolutePath() +
+                        " --wa-phone " + phoneNumber + " --wa-verify sms");
+            }
             runCommand("0");
             runCommand("y");
 
@@ -79,7 +93,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     }
 
     public static void main (String args[]) throws InterruptedException {
-        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(null, "+4915753363836");
+        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(null, "+4915753363836",false);
         Thread sub = new Thread(awa);
         sub.start();
         while(!awa.requestInputProperty().getValue())

@@ -124,7 +124,7 @@ public class Main extends Application {
         ta.setEditable(false);
         contentBox.getChildren().add(ta);
 
-        DynamicConfig dc = DynamicConfig.createEmpty("config/dynamic_config.txt");
+        DynamicConfig dc = DynamicConfig.create("config/dynamic_config.txt");
         dc.setCondor_license(tfCondorLicense.getText());
         dc.setDatabase(tfDatabase.getText());
         dc.setIosBackupDirectory(tfIosBackupDirectory.getText());

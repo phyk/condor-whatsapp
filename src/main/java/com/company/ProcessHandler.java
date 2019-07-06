@@ -104,7 +104,7 @@ public class ProcessHandler extends Task {
             continueWithWhatsappAndroid();
         }
         else {
-            awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber());
+            awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber(), dc.isMacOs());
             requestCommand = awa.requestInputProperty();
             requestCommand.addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
