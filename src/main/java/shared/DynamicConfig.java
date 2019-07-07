@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.ComboBoxBase;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class DynamicConfig {
     private StringProperty phoneNumber;
     private StringProperty mySqlHost;
     private BooleanProperty isMacOs;
+    private StringProperty encDbPath;
 
     private DynamicConfig(String path, boolean empty)
     {
@@ -37,6 +39,7 @@ public class DynamicConfig {
         this.platformIsAndroid = new SimpleBooleanProperty();
         this.mySqlHost = new SimpleStringProperty("");
         this.isMacOs = new SimpleBooleanProperty();
+        this.encDbPath = new SimpleStringProperty("");
 
         this.path.setValue(path);
         if(!empty)
@@ -75,6 +78,8 @@ public class DynamicConfig {
                             mySqlHost.setValue(items[1]);break;
                         case "operatingSystem":
                             isMacOs.setValue(items[1].equals("Mac"));break;
+                        case "encDbPath":
+                            encDbPath.setValue(items[1]);break;
                         default:
                             break;
                     }
@@ -235,6 +240,11 @@ public class DynamicConfig {
         this.iosBackupDirectory.setValue(iosBackupDirectory);
     }
 
+    public void setEncDbPath(String path)
+    {
+        this.encDbPath.setValue(path);
+    }
+
     public boolean isMacOs()
     {
         return isMacOs.getValue();
@@ -242,5 +252,9 @@ public class DynamicConfig {
 
     public void close() {
         this.writeConfigToFile();
+    }
+
+    public String getPathToEncMsgstore() {
+        return this.encDbPath.getValue();
     }
 }

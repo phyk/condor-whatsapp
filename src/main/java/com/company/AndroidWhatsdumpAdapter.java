@@ -12,6 +12,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
 
     private static Logger log = LogManager.getLogger("condor-whatsapp-main");
     private final ProcessHandler processHandler;
+    private final String pathToEncDb;
     private OutputStream err = new OutputStreamLogger(true);
     private OutputStream progress = new OutputStreamLogger(false);
     private PrintWriter commandInput;
@@ -26,11 +27,12 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     private SimpleBooleanProperty isDone = new SimpleBooleanProperty(false);
     private String phoneNumber;
 
-    public AndroidWhatsdumpAdapter(ProcessHandler processHandler, String phoneNumber, boolean platformIsMac)
+    public AndroidWhatsdumpAdapter(ProcessHandler processHandler, String phoneNumber, String pathToEncDb, boolean platformIsMac)
     {
         this.phoneNumber = phoneNumber;
         this.processHandler = processHandler;
         this.platformIsMac = platformIsMac;
+        this.pathToEncDb = pathToEncDb;
     }
 
 
@@ -53,14 +55,14 @@ public class AndroidWhatsdumpAdapter implements Runnable{
             runCommand("set JAVA_HOME=" + new File("jdk").getAbsolutePath());
             if(!platformIsMac) {
                 runCommand(new File("dist/whatsdump/whatsdump.exe").getAbsolutePath() +
-                        " --wa-phone " + phoneNumber + " --wa-verify sms"); //  --show-emulator
+                        " --wa-phone " + phoneNumber + " --wa-verify sms --msgstore "+pathToEncDb); //  --show-emulator
             }
             else
             {
                 runCommand(new File("dist/whatsdump/whatsdump").getAbsolutePath() +
                         " --wa-phone " + phoneNumber + " --wa-verify sms");
             }
-            runCommand("0");
+            //runCommand("0");
             runCommand("y");
 
             synchronized (this)
@@ -93,7 +95,7 @@ public class AndroidWhatsdumpAdapter implements Runnable{
     }
 
     public static void main (String args[]) throws InterruptedException {
-        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(null, "+4915753363836",false);
+        AndroidWhatsdumpAdapter awa = new AndroidWhatsdumpAdapter(null, "+4915753363836","",false);
         Thread sub = new Thread(awa);
         sub.start();
         while(!awa.requestInputProperty().getValue())

@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.web.WebView;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -40,7 +41,7 @@ public class Main extends Application {
 
     private boolean platformIsAndroid = true;
     private TextField tfMysqlHost, tfMysqlPort, tfusername, tfDatabase, tfCondorLicense, tfIosBackupDirectory,
-            tfCommand, tfPhoneNumber;
+            tfCommand, tfPhoneNumber, tfencDbPath;
     private PasswordField pf;
     private VBox osSelectionBox, directoryBox,connectBox,developerModeBox,IOSBackupBox;
     private HBox continueBox;
@@ -50,6 +51,7 @@ public class Main extends Application {
     private Button backToOSSelection;
     private ProcessHandler dbProcess;
     private static Logger log = LogManager.getLogger("condor-whatsapp-main");
+    private VBox encInBox;
 
     @Override
     public void start(Stage primaryStage) {
@@ -61,6 +63,7 @@ public class Main extends Application {
         tfPhoneNumber = new TextField();
         tfIosBackupDirectory = new TextField();
         tfCommand = new TextField();
+        tfencDbPath = new TextField();
         pf = new PasswordField();
         log.trace("Initializing Main");
         try {
@@ -77,6 +80,7 @@ public class Main extends Application {
             tfCondorLicense.setText(dc.getCondor_license());
             tfPhoneNumber.setText(dc.getPhoneNumber());
             tfIosBackupDirectory.setText(dc.getIosBackupDirectory());
+            tfencDbPath.setText(dc.getPathToEncMsgstore());
 
             log.trace("Initialized Textfields");
 
@@ -84,6 +88,7 @@ public class Main extends Application {
             initDeveloperModePane();
             initConnectPane();
             initIOSBackupBox();
+            initLocateBackupPane();
 
             log.trace("Run through init Methods");
 
@@ -133,6 +138,7 @@ public class Main extends Application {
         dc.setUsername(tfusername.getText());
         dc.setPlatformIsAndroid(platformIsAndroid);
         dc.setPhoneNumber(tfPhoneNumber.getText());
+        dc.setEncDbPath(tfencDbPath.getText());
 
         dbProcess = new ProcessHandler(dc, DefaultConfig.create());
         dbProcess.messageProperty().addListener((observable, oldValue, newValue) -> {
@@ -426,6 +432,86 @@ public class Main extends Application {
 
         continueDeveloperModeButton.setOnAction(e->{
                 progressScene(primaryStage);
+        });
+    }
+
+    private void initLocateBackupPane(){
+
+        VBox androidInstructionBox = new VBox();
+        Label instruction0 = new Label("Please make a fresh Backup from Whatsapp");
+        Label instruction1 = new Label("1. Go to Settings menu");
+        Label instruction2 = new Label("2. Select Chats");
+        Label instruction3 = new Label("3. Select Chat Backup");
+        Label instruction4 = new Label("4. Select Backup");
+        Label instruction5 = new Label("5. Connect your device to your PC");
+        Label instruction6 = new Label("6. Locate your Backup under:");
+        Label instruction7 = new Label("      Internal Storage/Whatsapp/Databases/msgstore.db.crypt12");
+        Label instruction8 = new Label("7. Copy it to the folder under");
+        Label instruction9 = new Label("      <This app>/output/<your phone number>/");
+
+        Label lAS = new Label("Finally -> please install Android Studio:");
+        lAS.setTextFill(Color.WHITE);
+        lAS.setFont(new Font(18));
+        Hyperlink hlAS = new Hyperlink("Download here");
+        hlAS.setFont(new Font(18));
+        hlAS.setUnderline(true);
+        hlAS.setOnAction(e->{
+            getHostServices().showDocument("https://developer.android.com/studio");
+        });
+
+        VBox encIn = new VBox();
+        Label titleEncDb = new Label("Enter the path to the msgstore.db.crypt12 file");
+        titleEncDb.setTextFill(Color.WHITE);
+        titleEncDb.setFont(new Font(18));
+        encIn.getChildren().add(titleEncDb);
+        encIn.getChildren().add(tfencDbPath);
+        FileChooser directoryChooser = new FileChooser();
+        Button openButton = new Button("Navigate");
+        openButton.setPrefWidth(100);
+        openButton.setOnAction( e-> {
+            File file = directoryChooser.showOpenDialog(primaryStage);
+            if (file != null) tfencDbPath.setText(file.getAbsolutePath());
+        });
+        encIn.getChildren().add(openButton);
+
+        GridPane androidStudioBox = new GridPane();
+        androidStudioBox.setHgap(5);
+        androidStudioBox.setPadding(new Insets(10,0,10,0));
+        androidStudioBox.add(lAS,0,0);
+        androidStudioBox.add(hlAS,1,0);
+
+        instruction0.setTextFill(Color.WHITE);
+        instruction0.setFont(new Font(18));
+        instruction1.setTextFill(Color.WHITE);
+        instruction1.setFont(new Font(18));
+        instruction2.setTextFill(Color.WHITE);
+        instruction2.setFont(new Font(18));
+        instruction3.setTextFill(Color.WHITE);
+        instruction3.setFont(new Font(18));
+        instruction4.setTextFill(Color.WHITE);
+        instruction4.setFont(new Font(18));
+        instruction5.setTextFill(Color.WHITE);
+        instruction5.setFont(new Font(18));
+        instruction6.setTextFill(Color.WHITE);
+        instruction6.setFont(new Font(18));
+        instruction7.setTextFill(Color.WHITE);
+        instruction7.setFont(new Font(18));
+        instruction8.setTextFill(Color.WHITE);
+        instruction8.setFont(new Font(18));
+        instruction9.setTextFill(Color.WHITE);
+        instruction9.setFont(new Font(18));
+        androidInstructionBox.getChildren().addAll(instruction0,instruction1,instruction2,instruction3,instruction4,instruction5, instruction6,
+                instruction7, instruction8, instruction9,androidStudioBox, encIn);
+        androidInstructionBox.setPadding(new Insets(10));
+        encInBox = new VBox();
+        encInBox.getChildren().addAll(androidInstructionBox);
+
+        continueDeveloperModeButton = new Button("Continue ->");
+        continueDeveloperModeButton.setPrefWidth(100);
+        continueDeveloperModeButton.alignmentProperty().set(Pos.CENTER_RIGHT);
+
+        continueDeveloperModeButton.setOnAction(e->{
+            progressScene(primaryStage);
         });
     }
 

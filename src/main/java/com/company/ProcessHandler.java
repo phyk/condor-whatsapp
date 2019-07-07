@@ -35,6 +35,7 @@ public class ProcessHandler extends Task {
         if(dc.isPlatformIsAndroid())
         {
             handleAndroidWhatsapp(dc, df);
+//            continueWithWhatsappAndroid();
         }
         else
         {
@@ -104,7 +105,7 @@ public class ProcessHandler extends Task {
             continueWithWhatsappAndroid();
         }
         else {
-            awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber(), dc.isMacOs());
+            awa = new AndroidWhatsdumpAdapter(this, dc.getPhoneNumber(), dc.getPathToEncMsgstore(), dc.isMacOs());
             requestCommand = awa.requestInputProperty();
             requestCommand.addListener((observable, oldValue, newValue) -> {
                 if (newValue) {
